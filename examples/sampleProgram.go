@@ -31,6 +31,8 @@ import (
 
 var configAggregatorInstance *configurationaggregatorv1.ConfigurationAggregatorV1
 
+//Authentication can be done by Both API Key and Bearer token
+
 func initAndReturnSingletonInstanceWithAPIKey(authToken string, guid string, region string) *configurationaggregatorv1.ConfigurationAggregatorV1 {
 	instanceURL := "https://" + region + ".apprapp.cloud.ibm.com/apprapp/config_aggregator/v1/instances/" + guid
 	var once sync.Once
