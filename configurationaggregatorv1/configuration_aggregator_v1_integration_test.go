@@ -104,6 +104,10 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 				ResourceCrn:     core.StringPtr("testString"),
 				Limit:           core.Int64Ptr(int64(10)),
 				Start:           core.StringPtr("testString"),
+				SubAccount:      core.StringPtr("testString"),
+				AccessTags:      core.StringPtr("role:admin"),
+				UserTags:        core.StringPtr("test"),
+				ServiceTags:     core.StringPtr("test:tag"),
 			}
 
 			listConfigsOptions.Start = nil
@@ -134,6 +138,10 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 				Location:        core.StringPtr("testString"),
 				ResourceCrn:     core.StringPtr("testString"),
 				Limit:           core.Int64Ptr(int64(10)),
+				SubAccount:      core.StringPtr("testString"),
+				AccessTags:      core.StringPtr("role:admin"),
+				UserTags:        core.StringPtr("test"),
+				ServiceTags:     core.StringPtr("test:tag"),
 			}
 
 			// Test GetNext().
@@ -163,26 +171,26 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`ReplaceSettings - Update the settings for Configuration Aggregator`, func() {
+	Describe(`ReplaceSettings - Replace the settings for Configuration Aggregator`, func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
 		It(`ReplaceSettings(replaceSettingsOptions *ReplaceSettingsOptions)`, func() {
 			profileTemplateModel := &configurationaggregatorv1.ProfileTemplate{
 				ID:               core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57"),
-				TrustedProfileID: core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3"),
+				TrustedProfileID: core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7"),
 			}
 
 			additionalScopeModel := &configurationaggregatorv1.AdditionalScope{
 				Type:            core.StringPtr("Enterprise"),
-				EnterpriseID:    core.StringPtr("testString"),
+				EnterpriseID:    core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61"),
 				ProfileTemplate: profileTemplateModel,
 			}
 
 			replaceSettingsOptions := &configurationaggregatorv1.ReplaceSettingsOptions{
 				ResourceCollectionEnabled: core.BoolPtr(true),
-				TrustedProfileID:          core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3"),
-				Regions:                   []string{"us-south"},
+				TrustedProfileID:          core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560"),
+				Regions:                   []string{"all"},
 				AdditionalScope:           []configurationaggregatorv1.AdditionalScope{*additionalScopeModel},
 			}
 
