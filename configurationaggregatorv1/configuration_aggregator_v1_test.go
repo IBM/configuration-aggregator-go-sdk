@@ -195,6 +195,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					Expect(req.URL.Query()["resource_crn"]).To(Equal([]string{"testString"}))
 					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(10))}))
 					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["sub_account"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["access_tags"]).To(Equal([]string{"role:admin"}))
+					Expect(req.URL.Query()["user_tags"]).To(Equal([]string{"test"}))
+					Expect(req.URL.Query()["service_tags"]).To(Equal([]string{"test:tag"}))
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
 					fmt.Fprint(res, `} this is not valid json {`)
@@ -217,6 +221,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				listConfigsOptionsModel.ResourceCrn = core.StringPtr("testString")
 				listConfigsOptionsModel.Limit = core.Int64Ptr(int64(10))
 				listConfigsOptionsModel.Start = core.StringPtr("testString")
+				listConfigsOptionsModel.SubAccount = core.StringPtr("testString")
+				listConfigsOptionsModel.AccessTags = core.StringPtr("role:admin")
+				listConfigsOptionsModel.UserTags = core.StringPtr("test")
+				listConfigsOptionsModel.ServiceTags = core.StringPtr("test:tag")
 				listConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
 				result, response, operationErr := configurationAggregatorService.ListConfigs(listConfigsOptionsModel)
@@ -254,13 +262,17 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					Expect(req.URL.Query()["resource_crn"]).To(Equal([]string{"testString"}))
 					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(10))}))
 					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["sub_account"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["access_tags"]).To(Equal([]string{"role:admin"}))
+					Expect(req.URL.Query()["user_tags"]).To(Equal([]string{"test"}))
+					Expect(req.URL.Query()["service_tags"]).To(Equal([]string{"test:tag"}))
 					// Sleep a short time to support a timeout test
 					time.Sleep(100 * time.Millisecond)
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "tags": {"tag": "Tag"}}, "config": {}}]}`)
+					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"]}, "config": {}}]}`)
 				}))
 			})
 			It(`Invoke ListConfigs successfully with retries`, func() {
@@ -281,6 +293,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				listConfigsOptionsModel.ResourceCrn = core.StringPtr("testString")
 				listConfigsOptionsModel.Limit = core.Int64Ptr(int64(10))
 				listConfigsOptionsModel.Start = core.StringPtr("testString")
+				listConfigsOptionsModel.SubAccount = core.StringPtr("testString")
+				listConfigsOptionsModel.AccessTags = core.StringPtr("role:admin")
+				listConfigsOptionsModel.UserTags = core.StringPtr("test")
+				listConfigsOptionsModel.ServiceTags = core.StringPtr("test:tag")
 				listConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
@@ -324,10 +340,14 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					Expect(req.URL.Query()["resource_crn"]).To(Equal([]string{"testString"}))
 					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(10))}))
 					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["sub_account"]).To(Equal([]string{"testString"}))
+					Expect(req.URL.Query()["access_tags"]).To(Equal([]string{"role:admin"}))
+					Expect(req.URL.Query()["user_tags"]).To(Equal([]string{"test"}))
+					Expect(req.URL.Query()["service_tags"]).To(Equal([]string{"test:tag"}))
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "tags": {"tag": "Tag"}}, "config": {}}]}`)
+					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"]}, "config": {}}]}`)
 				}))
 			})
 			It(`Invoke ListConfigs successfully`, func() {
@@ -353,6 +373,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				listConfigsOptionsModel.ResourceCrn = core.StringPtr("testString")
 				listConfigsOptionsModel.Limit = core.Int64Ptr(int64(10))
 				listConfigsOptionsModel.Start = core.StringPtr("testString")
+				listConfigsOptionsModel.SubAccount = core.StringPtr("testString")
+				listConfigsOptionsModel.AccessTags = core.StringPtr("role:admin")
+				listConfigsOptionsModel.UserTags = core.StringPtr("test")
+				listConfigsOptionsModel.ServiceTags = core.StringPtr("test:tag")
 				listConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
@@ -379,6 +403,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				listConfigsOptionsModel.ResourceCrn = core.StringPtr("testString")
 				listConfigsOptionsModel.Limit = core.Int64Ptr(int64(10))
 				listConfigsOptionsModel.Start = core.StringPtr("testString")
+				listConfigsOptionsModel.SubAccount = core.StringPtr("testString")
+				listConfigsOptionsModel.AccessTags = core.StringPtr("role:admin")
+				listConfigsOptionsModel.UserTags = core.StringPtr("test")
+				listConfigsOptionsModel.ServiceTags = core.StringPtr("test:tag")
 				listConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := configurationAggregatorService.SetServiceURL("")
@@ -419,6 +447,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				listConfigsOptionsModel.ResourceCrn = core.StringPtr("testString")
 				listConfigsOptionsModel.Limit = core.Int64Ptr(int64(10))
 				listConfigsOptionsModel.Start = core.StringPtr("testString")
+				listConfigsOptionsModel.SubAccount = core.StringPtr("testString")
+				listConfigsOptionsModel.AccessTags = core.StringPtr("role:admin")
+				listConfigsOptionsModel.UserTags = core.StringPtr("test")
+				listConfigsOptionsModel.ServiceTags = core.StringPtr("test:tag")
 				listConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
@@ -467,9 +499,9 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					res.WriteHeader(200)
 					requestNumber++
 					if requestNumber == 1 {
-						fmt.Fprintf(res, "%s", `{"next":{"start":"1"},"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","tags":{"tag":"Tag"}},"config":{}}],"total_count":2,"limit":1}`)
+						fmt.Fprintf(res, "%s", `{"next":{"start":"1"},"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"]},"config":{}}],"total_count":2,"limit":1}`)
 					} else if requestNumber == 2 {
-						fmt.Fprintf(res, "%s", `{"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","tags":{"tag":"Tag"}},"config":{}}],"total_count":2,"limit":1}`)
+						fmt.Fprintf(res, "%s", `{"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"]},"config":{}}],"total_count":2,"limit":1}`)
 					} else {
 						res.WriteHeader(400)
 					}
@@ -490,6 +522,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					Location:        core.StringPtr("testString"),
 					ResourceCrn:     core.StringPtr("testString"),
 					Limit:           core.Int64Ptr(int64(10)),
+					SubAccount:      core.StringPtr("testString"),
+					AccessTags:      core.StringPtr("role:admin"),
+					UserTags:        core.StringPtr("test"),
+					ServiceTags:     core.StringPtr("test:tag"),
 				}
 
 				pager, err := configurationAggregatorService.NewConfigsPager(listConfigsOptionsModel)
@@ -520,6 +556,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					Location:        core.StringPtr("testString"),
 					ResourceCrn:     core.StringPtr("testString"),
 					Limit:           core.Int64Ptr(int64(10)),
+					SubAccount:      core.StringPtr("testString"),
+					AccessTags:      core.StringPtr("role:admin"),
+					UserTags:        core.StringPtr("test"),
+					ServiceTags:     core.StringPtr("test:tag"),
 				}
 
 				pager, err := configurationAggregatorService.NewConfigsPager(listConfigsOptionsModel)
@@ -559,19 +599,19 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				// Construct an instance of the ProfileTemplate model
 				profileTemplateModel := new(configurationaggregatorv1.ProfileTemplate)
 				profileTemplateModel.ID = core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57")
-				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
+				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7")
 
 				// Construct an instance of the AdditionalScope model
 				additionalScopeModel := new(configurationaggregatorv1.AdditionalScope)
 				additionalScopeModel.Type = core.StringPtr("Enterprise")
-				additionalScopeModel.EnterpriseID = core.StringPtr("testString")
+				additionalScopeModel.EnterpriseID = core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61")
 				additionalScopeModel.ProfileTemplate = profileTemplateModel
 
 				// Construct an instance of the ReplaceSettingsOptions model
 				replaceSettingsOptionsModel := new(configurationaggregatorv1.ReplaceSettingsOptions)
 				replaceSettingsOptionsModel.ResourceCollectionEnabled = core.BoolPtr(true)
-				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
-				replaceSettingsOptionsModel.Regions = []string{"us-south"}
+				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560")
+				replaceSettingsOptionsModel.Regions = []string{"all"}
 				replaceSettingsOptionsModel.AdditionalScope = []configurationaggregatorv1.AdditionalScope{*additionalScopeModel}
 				replaceSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
@@ -640,19 +680,19 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				// Construct an instance of the ProfileTemplate model
 				profileTemplateModel := new(configurationaggregatorv1.ProfileTemplate)
 				profileTemplateModel.ID = core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57")
-				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
+				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7")
 
 				// Construct an instance of the AdditionalScope model
 				additionalScopeModel := new(configurationaggregatorv1.AdditionalScope)
 				additionalScopeModel.Type = core.StringPtr("Enterprise")
-				additionalScopeModel.EnterpriseID = core.StringPtr("testString")
+				additionalScopeModel.EnterpriseID = core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61")
 				additionalScopeModel.ProfileTemplate = profileTemplateModel
 
 				// Construct an instance of the ReplaceSettingsOptions model
 				replaceSettingsOptionsModel := new(configurationaggregatorv1.ReplaceSettingsOptions)
 				replaceSettingsOptionsModel.ResourceCollectionEnabled = core.BoolPtr(true)
-				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
-				replaceSettingsOptionsModel.Regions = []string{"us-south"}
+				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560")
+				replaceSettingsOptionsModel.Regions = []string{"all"}
 				replaceSettingsOptionsModel.AdditionalScope = []configurationaggregatorv1.AdditionalScope{*additionalScopeModel}
 				replaceSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -729,19 +769,19 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				// Construct an instance of the ProfileTemplate model
 				profileTemplateModel := new(configurationaggregatorv1.ProfileTemplate)
 				profileTemplateModel.ID = core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57")
-				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
+				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7")
 
 				// Construct an instance of the AdditionalScope model
 				additionalScopeModel := new(configurationaggregatorv1.AdditionalScope)
 				additionalScopeModel.Type = core.StringPtr("Enterprise")
-				additionalScopeModel.EnterpriseID = core.StringPtr("testString")
+				additionalScopeModel.EnterpriseID = core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61")
 				additionalScopeModel.ProfileTemplate = profileTemplateModel
 
 				// Construct an instance of the ReplaceSettingsOptions model
 				replaceSettingsOptionsModel := new(configurationaggregatorv1.ReplaceSettingsOptions)
 				replaceSettingsOptionsModel.ResourceCollectionEnabled = core.BoolPtr(true)
-				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
-				replaceSettingsOptionsModel.Regions = []string{"us-south"}
+				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560")
+				replaceSettingsOptionsModel.Regions = []string{"all"}
 				replaceSettingsOptionsModel.AdditionalScope = []configurationaggregatorv1.AdditionalScope{*additionalScopeModel}
 				replaceSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -763,19 +803,19 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				// Construct an instance of the ProfileTemplate model
 				profileTemplateModel := new(configurationaggregatorv1.ProfileTemplate)
 				profileTemplateModel.ID = core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57")
-				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
+				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7")
 
 				// Construct an instance of the AdditionalScope model
 				additionalScopeModel := new(configurationaggregatorv1.AdditionalScope)
 				additionalScopeModel.Type = core.StringPtr("Enterprise")
-				additionalScopeModel.EnterpriseID = core.StringPtr("testString")
+				additionalScopeModel.EnterpriseID = core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61")
 				additionalScopeModel.ProfileTemplate = profileTemplateModel
 
 				// Construct an instance of the ReplaceSettingsOptions model
 				replaceSettingsOptionsModel := new(configurationaggregatorv1.ReplaceSettingsOptions)
 				replaceSettingsOptionsModel.ResourceCollectionEnabled = core.BoolPtr(true)
-				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
-				replaceSettingsOptionsModel.Regions = []string{"us-south"}
+				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560")
+				replaceSettingsOptionsModel.Regions = []string{"all"}
 				replaceSettingsOptionsModel.AdditionalScope = []configurationaggregatorv1.AdditionalScope{*additionalScopeModel}
 				replaceSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
@@ -811,19 +851,19 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				// Construct an instance of the ProfileTemplate model
 				profileTemplateModel := new(configurationaggregatorv1.ProfileTemplate)
 				profileTemplateModel.ID = core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57")
-				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
+				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7")
 
 				// Construct an instance of the AdditionalScope model
 				additionalScopeModel := new(configurationaggregatorv1.AdditionalScope)
 				additionalScopeModel.Type = core.StringPtr("Enterprise")
-				additionalScopeModel.EnterpriseID = core.StringPtr("testString")
+				additionalScopeModel.EnterpriseID = core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61")
 				additionalScopeModel.ProfileTemplate = profileTemplateModel
 
 				// Construct an instance of the ReplaceSettingsOptions model
 				replaceSettingsOptionsModel := new(configurationaggregatorv1.ReplaceSettingsOptions)
 				replaceSettingsOptionsModel.ResourceCollectionEnabled = core.BoolPtr(true)
-				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
-				replaceSettingsOptionsModel.Regions = []string{"us-south"}
+				replaceSettingsOptionsModel.TrustedProfileID = core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560")
+				replaceSettingsOptionsModel.Regions = []string{"all"}
 				replaceSettingsOptionsModel.AdditionalScope = []configurationaggregatorv1.AdditionalScope{*additionalScopeModel}
 				replaceSettingsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
@@ -1270,6 +1310,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				listConfigsOptionsModel.SetResourceCrn("testString")
 				listConfigsOptionsModel.SetLimit(int64(10))
 				listConfigsOptionsModel.SetStart("testString")
+				listConfigsOptionsModel.SetSubAccount("testString")
+				listConfigsOptionsModel.SetAccessTags("role:admin")
+				listConfigsOptionsModel.SetUserTags("test")
+				listConfigsOptionsModel.SetServiceTags("test:tag")
 				listConfigsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(listConfigsOptionsModel).ToNot(BeNil())
 				Expect(listConfigsOptionsModel.ConfigType).To(Equal(core.StringPtr("testString")))
@@ -1279,6 +1323,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				Expect(listConfigsOptionsModel.ResourceCrn).To(Equal(core.StringPtr("testString")))
 				Expect(listConfigsOptionsModel.Limit).To(Equal(core.Int64Ptr(int64(10))))
 				Expect(listConfigsOptionsModel.Start).To(Equal(core.StringPtr("testString")))
+				Expect(listConfigsOptionsModel.SubAccount).To(Equal(core.StringPtr("testString")))
+				Expect(listConfigsOptionsModel.AccessTags).To(Equal(core.StringPtr("role:admin")))
+				Expect(listConfigsOptionsModel.UserTags).To(Equal(core.StringPtr("test")))
+				Expect(listConfigsOptionsModel.ServiceTags).To(Equal(core.StringPtr("test:tag")))
 				Expect(listConfigsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewReplaceSettingsOptions successfully`, func() {
@@ -1286,31 +1334,31 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				profileTemplateModel := new(configurationaggregatorv1.ProfileTemplate)
 				Expect(profileTemplateModel).ToNot(BeNil())
 				profileTemplateModel.ID = core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57")
-				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
+				profileTemplateModel.TrustedProfileID = core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7")
 				Expect(profileTemplateModel.ID).To(Equal(core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57")))
-				Expect(profileTemplateModel.TrustedProfileID).To(Equal(core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")))
+				Expect(profileTemplateModel.TrustedProfileID).To(Equal(core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7")))
 
 				// Construct an instance of the AdditionalScope model
 				additionalScopeModel := new(configurationaggregatorv1.AdditionalScope)
 				Expect(additionalScopeModel).ToNot(BeNil())
 				additionalScopeModel.Type = core.StringPtr("Enterprise")
-				additionalScopeModel.EnterpriseID = core.StringPtr("testString")
+				additionalScopeModel.EnterpriseID = core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61")
 				additionalScopeModel.ProfileTemplate = profileTemplateModel
 				Expect(additionalScopeModel.Type).To(Equal(core.StringPtr("Enterprise")))
-				Expect(additionalScopeModel.EnterpriseID).To(Equal(core.StringPtr("testString")))
+				Expect(additionalScopeModel.EnterpriseID).To(Equal(core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61")))
 				Expect(additionalScopeModel.ProfileTemplate).To(Equal(profileTemplateModel))
 
 				// Construct an instance of the ReplaceSettingsOptions model
 				replaceSettingsOptionsModel := configurationAggregatorService.NewReplaceSettingsOptions()
 				replaceSettingsOptionsModel.SetResourceCollectionEnabled(true)
-				replaceSettingsOptionsModel.SetTrustedProfileID("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")
-				replaceSettingsOptionsModel.SetRegions([]string{"us-south"})
+				replaceSettingsOptionsModel.SetTrustedProfileID("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560")
+				replaceSettingsOptionsModel.SetRegions([]string{"all"})
 				replaceSettingsOptionsModel.SetAdditionalScope([]configurationaggregatorv1.AdditionalScope{*additionalScopeModel})
 				replaceSettingsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(replaceSettingsOptionsModel).ToNot(BeNil())
 				Expect(replaceSettingsOptionsModel.ResourceCollectionEnabled).To(Equal(core.BoolPtr(true)))
-				Expect(replaceSettingsOptionsModel.TrustedProfileID).To(Equal(core.StringPtr("Profile-6bb60124-8fc3-4d18-b63d-0b99560865d3")))
-				Expect(replaceSettingsOptionsModel.Regions).To(Equal([]string{"us-south"}))
+				Expect(replaceSettingsOptionsModel.TrustedProfileID).To(Equal(core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560")))
+				Expect(replaceSettingsOptionsModel.Regions).To(Equal([]string{"all"}))
 				Expect(replaceSettingsOptionsModel.AdditionalScope).To(Equal([]configurationaggregatorv1.AdditionalScope{*additionalScopeModel}))
 				Expect(replaceSettingsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})

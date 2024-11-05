@@ -110,6 +110,10 @@ var _ = Describe(`ConfigurationAggregatorV1 Examples Tests`, func() {
 				Location:        core.StringPtr("testString"),
 				ResourceCrn:     core.StringPtr("testString"),
 				Limit:           core.Int64Ptr(int64(10)),
+				SubAccount:      core.StringPtr("testString"),
+				AccessTags:      core.StringPtr("role:admin"),
+				UserTags:        core.StringPtr("test"),
+				ServiceTags:     core.StringPtr("test:tag"),
 			}
 
 			pager, err := configurationAggregatorService.NewConfigsPager(listConfigsOptions)
@@ -133,7 +137,22 @@ var _ = Describe(`ConfigurationAggregatorV1 Examples Tests`, func() {
 			fmt.Println("\nReplaceSettings() result:")
 			// begin-replace_settings
 
+			profileTemplateModel := &configurationaggregatorv1.ProfileTemplate{
+				ID:               core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57"),
+				TrustedProfileID: core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7"),
+			}
+
+			additionalScopeModel := &configurationaggregatorv1.AdditionalScope{
+				Type:            core.StringPtr("Enterprise"),
+				EnterpriseID:    core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61"),
+				ProfileTemplate: profileTemplateModel,
+			}
+
 			replaceSettingsOptions := configurationAggregatorService.NewReplaceSettingsOptions()
+			replaceSettingsOptions.SetResourceCollectionEnabled(true)
+			replaceSettingsOptions.SetTrustedProfileID("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560")
+			replaceSettingsOptions.SetRegions([]string{"all"})
+			replaceSettingsOptions.SetAdditionalScope([]configurationaggregatorv1.AdditionalScope{*additionalScopeModel})
 
 			settingsResponse, response, err := configurationAggregatorService.ReplaceSettings(replaceSettingsOptions)
 			if err != nil {
