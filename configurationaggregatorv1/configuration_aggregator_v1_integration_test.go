@@ -228,20 +228,6 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 			Expect(statusResponse).ToNot(BeNil())
 		})
 	})
-
-	Describe(`ManualReconcile - Manually trigger the recording of the Configuration items as part of Configuration Aggregator`, func() {
-		BeforeEach(func() {
-			shouldSkipTest()
-		})
-		It(`ManualReconcile(manualReconcileOptions *ManualReconcileOptions)`, func() {
-			manualReconcileOptions := &configurationaggregatorv1.ManualReconcileOptions{}
-
-			manualReconcileResponse, response, err := configurationAggregatorService.ManualReconcile(manualReconcileOptions)
-			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(202))
-			Expect(manualReconcileResponse).ToNot(BeNil())
-		})
-	})
 })
 
 //

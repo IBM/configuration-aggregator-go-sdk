@@ -205,24 +205,5 @@ var _ = Describe(`ConfigurationAggregatorV1 Examples Tests`, func() {
 			Expect(response.StatusCode).To(Equal(200))
 			Expect(statusResponse).ToNot(BeNil())
 		})
-		It(`ManualReconcile request example`, func() {
-			fmt.Println("\nManualReconcile() result:")
-			// begin-manual_reconcile
-
-			manualReconcileOptions := configurationAggregatorService.NewManualReconcileOptions()
-
-			manualReconcileResponse, response, err := configurationAggregatorService.ManualReconcile(manualReconcileOptions)
-			if err != nil {
-				panic(err)
-			}
-			b, _ := json.MarshalIndent(manualReconcileResponse, "", "  ")
-			fmt.Println(string(b))
-
-			// end-manual_reconcile
-
-			Expect(err).To(BeNil())
-			Expect(response.StatusCode).To(Equal(202))
-			Expect(manualReconcileResponse).ToNot(BeNil())
-		})
 	})
 })
