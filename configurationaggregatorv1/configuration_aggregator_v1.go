@@ -1259,7 +1259,7 @@ func UnmarshalStatusResponse(m map[string]json.RawMessage, result interface{}) (
 	return
 }
 
-// ConfigsPager can be used to simplify the use of the "ListConfigs" method.
+// ConfigsPager can be used to simplify the use of the "ListConfigs" method
 type ConfigsPager struct {
 	hasNext     bool
 	options     *ListConfigsOptions
