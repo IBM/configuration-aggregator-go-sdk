@@ -1280,6 +1280,206 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 			})
 		})
 	})
+	Describe(`ManualReconcile(manualReconcileOptions *ManualReconcileOptions) - Operation response error`, func() {
+		manualReconcilePath := "/reconcile"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(manualReconcilePath))
+					Expect(req.Method).To(Equal("POST"))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke ManualReconcile with error: Operation response processing error`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the ManualReconcileOptions model
+				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := configurationAggregatorService.ManualReconcile(manualReconcileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				configurationAggregatorService.EnableRetries(0, 0)
+				result, response, operationErr = configurationAggregatorService.ManualReconcile(manualReconcileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ManualReconcile(manualReconcileOptions *ManualReconcileOptions)`, func() {
+		manualReconcilePath := "/reconcile"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(manualReconcilePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprintf(res, "%s", `{"message": "Message"}`)
+				}))
+			})
+			It(`Invoke ManualReconcile successfully with retries`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+				configurationAggregatorService.EnableRetries(0, 0)
+
+				// Construct an instance of the ManualReconcileOptions model
+				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := configurationAggregatorService.ManualReconcileWithContext(ctx, manualReconcileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				configurationAggregatorService.DisableRetries()
+				result, response, operationErr := configurationAggregatorService.ManualReconcile(manualReconcileOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = configurationAggregatorService.ManualReconcileWithContext(ctx, manualReconcileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(manualReconcilePath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(202)
+					fmt.Fprintf(res, "%s", `{"message": "Message"}`)
+				}))
+			})
+			It(`Invoke ManualReconcile successfully`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := configurationAggregatorService.ManualReconcile(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the ManualReconcileOptions model
+				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = configurationAggregatorService.ManualReconcile(manualReconcileOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke ManualReconcile with error: Operation request error`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the ManualReconcileOptions model
+				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := configurationAggregatorService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := configurationAggregatorService.ManualReconcile(manualReconcileOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(202)
+				}))
+			})
+			It(`Invoke ManualReconcile successfully`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the ManualReconcileOptions model
+				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := configurationAggregatorService.ManualReconcile(manualReconcileOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
 	Describe(`Model constructor tests`, func() {
 		Context(`Using a service client instance`, func() {
 			configurationAggregatorService, _ := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
@@ -1328,6 +1528,13 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				Expect(listConfigsOptionsModel.UserTags).To(Equal(core.StringPtr("test")))
 				Expect(listConfigsOptionsModel.ServiceTags).To(Equal(core.StringPtr("test:tag")))
 				Expect(listConfigsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewManualReconcileOptions successfully`, func() {
+				// Construct an instance of the ManualReconcileOptions model
+				manualReconcileOptionsModel := configurationAggregatorService.NewManualReconcileOptions()
+				manualReconcileOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(manualReconcileOptionsModel).ToNot(BeNil())
+				Expect(manualReconcileOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewReplaceSettingsOptions successfully`, func() {
 				// Construct an instance of the ProfileTemplate model
