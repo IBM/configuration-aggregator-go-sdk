@@ -481,6 +481,66 @@ func (configurationAggregator *ConfigurationAggregatorV1) GetResourceCollectionS
 
 	return
 }
+
+// ManualReconcile : Manually trigger the recording of the Configuration items as part of Configuration Aggregator
+// Manually trigger the recording of the Configuration items as part of Configuration Aggregator.
+func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcile(manualReconcileOptions *ManualReconcileOptions) (result *ManualReconcileResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.ManualReconcileWithContext(context.Background(), manualReconcileOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ManualReconcileWithContext is an alternate form of the ManualReconcile method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcileWithContext(ctx context.Context, manualReconcileOptions *ManualReconcileOptions) (result *ManualReconcileResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(manualReconcileOptions, "manualReconcileOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/reconcile`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	for headerName, headerValue := range manualReconcileOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ManualReconcile")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "manual_reconcile", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalManualReconcileResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
 func getServiceComponentInfo() *core.ProblemComponent {
 	return core.NewProblemComponent(DefaultServiceName, "1.0.0")
 }
@@ -496,7 +556,7 @@ type About struct {
 	// The unique CRN of the IBM Cloud resource.
 	ResourceCrn *string `json:"resource_crn" validate:"required"`
 
-	// The account ID.
+	// The resource group id of the resources.
 	ResourceGroupID *string `json:"resource_group_id" validate:"required"`
 
 	// The name of the service to which the resources belongs.
@@ -505,10 +565,10 @@ type About struct {
 	// User defined name of the resource.
 	ResourceName *string `json:"resource_name" validate:"required"`
 
-	// Date/time stamp identifying when the information was last collected. Must be in the RFC 3339 format.
+	// The date and time the configuration was collected, in RFC 3339 format.
 	LastConfigRefreshTime *strfmt.DateTime `json:"last_config_refresh_time" validate:"required"`
 
-	// Location of the resource specified.
+	// The location or region in which the resources are created.
 	Location *string `json:"location" validate:"required"`
 
 	// Access tags specified by the user for the resource. For more information, see
@@ -647,13 +707,14 @@ func UnmarshalConfig(m map[string]json.RawMessage, result interface{}) (err erro
 }
 
 // Configuration : The configuration of the resource.
+// This type supports additional properties of type interface{}.
 type Configuration struct {
 
-	// Allows users to set arbitrary properties
+	// Allows users to set arbitrary properties of type interface{}.
 	additionalProperties map[string]interface{}
 }
 
-// SetProperty allows the user to set an arbitrary property on an instance of Configuration
+// SetProperty allows the user to set an arbitrary property on an instance of Configuration.
 func (o *Configuration) SetProperty(key string, value interface{}) {
 	if o.additionalProperties == nil {
 		o.additionalProperties = make(map[string]interface{})
@@ -661,7 +722,7 @@ func (o *Configuration) SetProperty(key string, value interface{}) {
 	o.additionalProperties[key] = value
 }
 
-// SetProperties allows the user to set a map of arbitrary properties on an instance of Configuration
+// SetProperties allows the user to set a map of arbitrary properties on an instance of Configuration.
 func (o *Configuration) SetProperties(m map[string]interface{}) {
 	o.additionalProperties = make(map[string]interface{})
 	for k, v := range m {
@@ -669,12 +730,12 @@ func (o *Configuration) SetProperties(m map[string]interface{}) {
 	}
 }
 
-// GetProperty allows the user to retrieve an arbitrary property from an instance of Configuration
+// GetProperty allows the user to retrieve an arbitrary property from an instance of Configuration.
 func (o *Configuration) GetProperty(key string) interface{} {
 	return o.additionalProperties[key]
 }
 
-// GetProperties allows the user to retrieve the map of arbitrary properties from an instance of Configuration
+// GetProperties allows the user to retrieve the map of arbitrary properties from an instance of Configuration.
 func (o *Configuration) GetProperties() map[string]interface{} {
 	return o.additionalProperties
 }
@@ -713,7 +774,7 @@ func UnmarshalConfiguration(m map[string]json.RawMessage, result interface{}) (e
 // GetResourceCollectionStatusOptions : The GetResourceCollectionStatus options.
 type GetResourceCollectionStatusOptions struct {
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -731,7 +792,7 @@ func (options *GetResourceCollectionStatusOptions) SetHeaders(param map[string]s
 // GetSettingsOptions : The GetSettings options.
 type GetSettingsOptions struct {
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -781,7 +842,7 @@ type ListConfigsOptions struct {
 	// Filter the resource configurations attached with the specified service tags.
 	ServiceTags *string `json:"service_tags,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -873,10 +934,10 @@ type ListConfigsResponse struct {
 	// The reference to the first page of entries.
 	First *PaginatedFirst `json:"first,omitempty"`
 
-	// The reference to the previous page of entries.
+	// The reference to the previous page of entries. If absent, this is the first page.
 	Prev *PaginatedPrevious `json:"prev,omitempty"`
 
-	// The reference to the next page of entries.
+	// The reference to the next page of entries. If absent, this is the last page.
 	Next *PaginatedNext `json:"next,omitempty"`
 
 	// Array of resource configurations.
@@ -928,6 +989,42 @@ func (resp *ListConfigsResponse) GetNextStart() (*string, error) {
 	return resp.Next.Start, nil
 }
 
+// ManualReconcileOptions : The ManualReconcile options.
+type ManualReconcileOptions struct {
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewManualReconcileOptions : Instantiate ManualReconcileOptions
+func (*ConfigurationAggregatorV1) NewManualReconcileOptions() *ManualReconcileOptions {
+	return &ManualReconcileOptions{}
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ManualReconcileOptions) SetHeaders(param map[string]string) *ManualReconcileOptions {
+	options.Headers = param
+	return options
+}
+
+// ManualReconcileResponse : The reconciliation response.
+type ManualReconcileResponse struct {
+	// The status message of the manual reconciliation request.
+	Message *string `json:"message,omitempty"`
+}
+
+// UnmarshalManualReconcileResponse unmarshals an instance of ManualReconcileResponse from the specified map of raw messages.
+func UnmarshalManualReconcileResponse(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ManualReconcileResponse)
+	err = core.UnmarshalPrimitive(m, "message", &obj.Message)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "message-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // PaginatedFirst : The reference to the first page of entries.
 type PaginatedFirst struct {
 	// The reference to the first page of entries.
@@ -946,7 +1043,7 @@ func UnmarshalPaginatedFirst(m map[string]json.RawMessage, result interface{}) (
 	return
 }
 
-// PaginatedNext : The reference to the next page of entries.
+// PaginatedNext : The reference to the next page of entries. If absent, this is the last page.
 type PaginatedNext struct {
 	// The reference to the next page of entries.
 	Href *string `json:"href,omitempty"`
@@ -972,7 +1069,7 @@ func UnmarshalPaginatedNext(m map[string]json.RawMessage, result interface{}) (e
 	return
 }
 
-// PaginatedPrevious : The reference to the previous page of entries.
+// PaginatedPrevious : The reference to the previous page of entries. If absent, this is the first page.
 type PaginatedPrevious struct {
 	// The reference to the previous page of entries.
 	Href *string `json:"href,omitempty"`
@@ -1039,7 +1136,7 @@ type ReplaceSettingsOptions struct {
 	// The additional scope that enables resource collection for Enterprise acccounts.
 	AdditionalScope []AdditionalScope `json:"additional_scope,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
