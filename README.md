@@ -50,7 +50,7 @@ Configuration Aggregator | configurationaggregatorv1
 * Go version 1.20 or above.
 
 ## Installation
-The current version of this SDK: 0.0.2
+The current version of this SDK: 0.0.4
 
 ### Go modules  
 If your application uses Go modules for dependency management (recommended), just add an import for each service 
