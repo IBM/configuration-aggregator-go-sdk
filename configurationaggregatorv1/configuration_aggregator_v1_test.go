@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2024.
+ * (C) Copyright IBM Corp. 2025.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -272,7 +272,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"]}, "config": {}}]}`)
+					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "type_id": "TypeID", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"]}, "config": {}, "config_v2": {}}]}`)
 				}))
 			})
 			It(`Invoke ListConfigs successfully with retries`, func() {
@@ -347,7 +347,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"]}, "config": {}}]}`)
+					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "type_id": "TypeID", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"]}, "config": {}, "config_v2": {}}]}`)
 				}))
 			})
 			It(`Invoke ListConfigs successfully`, func() {
@@ -499,9 +499,9 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					res.WriteHeader(200)
 					requestNumber++
 					if requestNumber == 1 {
-						fmt.Fprintf(res, "%s", `{"next":{"start":"1"},"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"]},"config":{}}],"total_count":2,"limit":1}`)
+						fmt.Fprintf(res, "%s", `{"next":{"start":"1"},"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","type_id":"TypeID","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"]},"config":{},"config_v2":{}}],"total_count":2,"limit":1}`)
 					} else if requestNumber == 2 {
-						fmt.Fprintf(res, "%s", `{"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"]},"config":{}}],"total_count":2,"limit":1}`)
+						fmt.Fprintf(res, "%s", `{"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","type_id":"TypeID","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"]},"config":{},"config_v2":{}}],"total_count":2,"limit":1}`)
 					} else {
 						res.WriteHeader(400)
 					}

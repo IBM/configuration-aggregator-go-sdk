@@ -1,7 +1,7 @@
 //go:build integration
 
 /**
- * (C) Copyright IBM Corp. 2024.
+ * (C) Copyright IBM Corp. 2025.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`ListConfigs - Get the list of configurations of the resources`, func() {
+	Describe(`ListConfigs - List of configurations of the resources`, func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
