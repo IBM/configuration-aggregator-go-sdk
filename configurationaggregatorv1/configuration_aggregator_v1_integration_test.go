@@ -1,7 +1,7 @@
 //go:build integration
 
 /**
- * (C) Copyright IBM Corp. 2024.
+ * (C) Copyright IBM Corp. 2025.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/IBM/configuration-aggregator-go-sdk/configurationaggregatorv1"
+	"github.com/IBM/cloud-go-sdk/configurationaggregatorv1"
 	"github.com/IBM/go-sdk-core/v5/core"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -42,10 +42,10 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 	const externalConfigFile = "../configuration_aggregator_v1.env"
 
 	var (
-		err                            error
+		err          error
 		configurationAggregatorService *configurationaggregatorv1.ConfigurationAggregatorV1
-		serviceURL                     string
-		config                         map[string]string
+		serviceURL   string
+		config       map[string]string
 	)
 
 	var shouldSkipTest = func() {
@@ -91,23 +91,23 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 		})
 	})
 
-	Describe(`ListConfigs - Get the list of configurations of the resources`, func() {
+	Describe(`ListConfigs - List of configurations of the resources`, func() {
 		BeforeEach(func() {
 			shouldSkipTest()
 		})
-		It(`ListConfigs(listConfigsOptions *ListConfigsOptions) with pagination`, func() {
+		It(`ListConfigs(listConfigsOptions *ListConfigsOptions) with pagination`, func(){
 			listConfigsOptions := &configurationaggregatorv1.ListConfigsOptions{
-				ConfigType:      core.StringPtr("testString"),
-				ServiceName:     core.StringPtr("testString"),
+				ConfigType: core.StringPtr("testString"),
+				ServiceName: core.StringPtr("testString"),
 				ResourceGroupID: core.StringPtr("testString"),
-				Location:        core.StringPtr("testString"),
-				ResourceCrn:     core.StringPtr("testString"),
-				Limit:           core.Int64Ptr(int64(10)),
-				Start:           core.StringPtr("testString"),
-				SubAccount:      core.StringPtr("testString"),
-				AccessTags:      core.StringPtr("role:admin"),
-				UserTags:        core.StringPtr("test"),
-				ServiceTags:     core.StringPtr("test:tag"),
+				Location: core.StringPtr("testString"),
+				ResourceCrn: core.StringPtr("testString"),
+				Limit: core.Int64Ptr(int64(10)),
+				Start: core.StringPtr("testString"),
+				SubAccount: core.StringPtr("testString"),
+				AccessTags: core.StringPtr("role:admin"),
+				UserTags: core.StringPtr("test"),
+				ServiceTags: core.StringPtr("test:tag"),
 			}
 
 			listConfigsOptions.Start = nil
@@ -130,18 +130,18 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 			}
 			fmt.Fprintf(GinkgoWriter, "Retrieved a total of %d item(s) with pagination.\n", len(allResults))
 		})
-		It(`ListConfigs(listConfigsOptions *ListConfigsOptions) using ConfigsPager`, func() {
+		It(`ListConfigs(listConfigsOptions *ListConfigsOptions) using ConfigsPager`, func(){
 			listConfigsOptions := &configurationaggregatorv1.ListConfigsOptions{
-				ConfigType:      core.StringPtr("testString"),
-				ServiceName:     core.StringPtr("testString"),
+				ConfigType: core.StringPtr("testString"),
+				ServiceName: core.StringPtr("testString"),
 				ResourceGroupID: core.StringPtr("testString"),
-				Location:        core.StringPtr("testString"),
-				ResourceCrn:     core.StringPtr("testString"),
-				Limit:           core.Int64Ptr(int64(10)),
-				SubAccount:      core.StringPtr("testString"),
-				AccessTags:      core.StringPtr("role:admin"),
-				UserTags:        core.StringPtr("test"),
-				ServiceTags:     core.StringPtr("test:tag"),
+				Location: core.StringPtr("testString"),
+				ResourceCrn: core.StringPtr("testString"),
+				Limit: core.Int64Ptr(int64(10)),
+				SubAccount: core.StringPtr("testString"),
+				AccessTags: core.StringPtr("role:admin"),
+				UserTags: core.StringPtr("test"),
+				ServiceTags: core.StringPtr("test:tag"),
 			}
 
 			// Test GetNext().
@@ -177,21 +177,21 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 		})
 		It(`ReplaceSettings(replaceSettingsOptions *ReplaceSettingsOptions)`, func() {
 			profileTemplateModel := &configurationaggregatorv1.ProfileTemplate{
-				ID:               core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57"),
+				ID: core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57"),
 				TrustedProfileID: core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7"),
 			}
 
 			additionalScopeModel := &configurationaggregatorv1.AdditionalScope{
-				Type:            core.StringPtr("Enterprise"),
-				EnterpriseID:    core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61"),
+				Type: core.StringPtr("Enterprise"),
+				EnterpriseID: core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61"),
 				ProfileTemplate: profileTemplateModel,
 			}
 
 			replaceSettingsOptions := &configurationaggregatorv1.ReplaceSettingsOptions{
 				ResourceCollectionEnabled: core.BoolPtr(true),
-				TrustedProfileID:          core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560"),
-				Regions:                   []string{"all"},
-				AdditionalScope:           []configurationaggregatorv1.AdditionalScope{*additionalScopeModel},
+				TrustedProfileID: core.StringPtr("Profile-1260aec2-f2fc-44e2-8697-2cc15a447560"),
+				Regions: []string{"all"},
+				AdditionalScope: []configurationaggregatorv1.AdditionalScope{*additionalScopeModel},
 			}
 
 			settingsResponse, response, err := configurationAggregatorService.ReplaceSettings(replaceSettingsOptions)
@@ -206,7 +206,8 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 			shouldSkipTest()
 		})
 		It(`GetSettings(getSettingsOptions *GetSettingsOptions)`, func() {
-			getSettingsOptions := &configurationaggregatorv1.GetSettingsOptions{}
+			getSettingsOptions := &configurationaggregatorv1.GetSettingsOptions{
+			}
 
 			settingsResponse, response, err := configurationAggregatorService.GetSettings(getSettingsOptions)
 			Expect(err).To(BeNil())
@@ -220,7 +221,8 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 			shouldSkipTest()
 		})
 		It(`GetResourceCollectionStatus(getResourceCollectionStatusOptions *GetResourceCollectionStatusOptions)`, func() {
-			getResourceCollectionStatusOptions := &configurationaggregatorv1.GetResourceCollectionStatusOptions{}
+			getResourceCollectionStatusOptions := &configurationaggregatorv1.GetResourceCollectionStatusOptions{
+			}
 
 			statusResponse, response, err := configurationAggregatorService.GetResourceCollectionStatus(getResourceCollectionStatusOptions)
 			Expect(err).To(BeNil())
@@ -234,7 +236,8 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 			shouldSkipTest()
 		})
 		It(`ManualReconcile(manualReconcileOptions *ManualReconcileOptions)`, func() {
-			manualReconcileOptions := &configurationaggregatorv1.ManualReconcileOptions{}
+			manualReconcileOptions := &configurationaggregatorv1.ManualReconcileOptions{
+			}
 
 			manualReconcileResponse, response, err := configurationAggregatorService.ManualReconcile(manualReconcileOptions)
 			Expect(err).To(BeNil())

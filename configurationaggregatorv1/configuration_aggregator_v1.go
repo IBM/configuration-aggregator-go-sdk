@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2024.
+ * (C) Copyright IBM Corp. 2025.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,8 +183,8 @@ func (configurationAggregator *ConfigurationAggregatorV1) DisableRetries() {
 	configurationAggregator.Service.DisableRetries()
 }
 
-// ListConfigs : Get the list of configurations of the resources
-// Retrieve the list of resource configurations collected as part of Configuration Aggregator.
+// ListConfigs : List of configurations of the resources
+// List the resource configurations collected as part of Configuration Aggregator.
 func (configurationAggregator *ConfigurationAggregatorV1) ListConfigs(listConfigsOptions *ListConfigsOptions) (result *ListConfigsResponse, response *core.DetailedResponse, err error) {
 	result, response, err = configurationAggregator.ListConfigsWithContext(context.Background(), listConfigsOptions)
 	err = core.RepurposeSDKProblem(err, "")
@@ -571,6 +571,9 @@ type About struct {
 	// The location or region in which the resources are created.
 	Location *string `json:"location" validate:"required"`
 
+	// The unique identifier of the resource.
+	TypeID *string `json:"type_id,omitempty"`
+
 	// Access tags specified by the user for the resource. For more information, see
 	// https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#tag-types.
 	AccessTags []string `json:"access_tags,omitempty"`
@@ -625,6 +628,11 @@ func UnmarshalAbout(m map[string]json.RawMessage, result interface{}) (err error
 	err = core.UnmarshalPrimitive(m, "location", &obj.Location)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "location-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "type_id", &obj.TypeID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "type_id-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "access_tags", &obj.AccessTags)
@@ -687,6 +695,9 @@ type Config struct {
 
 	// The configuration of the resource.
 	Config *Configuration `json:"config" validate:"required"`
+
+	// The configuration of the resource.
+	ConfigV2 *Configuration `json:"config_v2,omitempty"`
 }
 
 // UnmarshalConfig unmarshals an instance of Config from the specified map of raw messages.
@@ -702,19 +713,23 @@ func UnmarshalConfig(m map[string]json.RawMessage, result interface{}) (err erro
 		err = core.SDKErrorf(err, "", "config-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalModel(m, "config_v2", &obj.ConfigV2, UnmarshalConfiguration)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "config_v2-error", common.GetComponentInfo())
+		return
+	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
 // Configuration : The configuration of the resource.
-// This type supports additional properties of type interface{}.
 type Configuration struct {
 
-	// Allows users to set arbitrary properties of type interface{}.
+	// Allows users to set arbitrary properties
 	additionalProperties map[string]interface{}
 }
 
-// SetProperty allows the user to set an arbitrary property on an instance of Configuration.
+// SetProperty allows the user to set an arbitrary property on an instance of Configuration
 func (o *Configuration) SetProperty(key string, value interface{}) {
 	if o.additionalProperties == nil {
 		o.additionalProperties = make(map[string]interface{})
@@ -722,7 +737,7 @@ func (o *Configuration) SetProperty(key string, value interface{}) {
 	o.additionalProperties[key] = value
 }
 
-// SetProperties allows the user to set a map of arbitrary properties on an instance of Configuration.
+// SetProperties allows the user to set a map of arbitrary properties on an instance of Configuration
 func (o *Configuration) SetProperties(m map[string]interface{}) {
 	o.additionalProperties = make(map[string]interface{})
 	for k, v := range m {
@@ -730,12 +745,12 @@ func (o *Configuration) SetProperties(m map[string]interface{}) {
 	}
 }
 
-// GetProperty allows the user to retrieve an arbitrary property from an instance of Configuration.
+// GetProperty allows the user to retrieve an arbitrary property from an instance of Configuration
 func (o *Configuration) GetProperty(key string) interface{} {
 	return o.additionalProperties[key]
 }
 
-// GetProperties allows the user to retrieve the map of arbitrary properties from an instance of Configuration.
+// GetProperties allows the user to retrieve the map of arbitrary properties from an instance of Configuration
 func (o *Configuration) GetProperties() map[string]interface{} {
 	return o.additionalProperties
 }
@@ -774,7 +789,7 @@ func UnmarshalConfiguration(m map[string]json.RawMessage, result interface{}) (e
 // GetResourceCollectionStatusOptions : The GetResourceCollectionStatus options.
 type GetResourceCollectionStatusOptions struct {
 
-	// Allows users to set headers on API requests.
+	// Allows users to set headers on API requests
 	Headers map[string]string
 }
 
@@ -792,7 +807,7 @@ func (options *GetResourceCollectionStatusOptions) SetHeaders(param map[string]s
 // GetSettingsOptions : The GetSettings options.
 type GetSettingsOptions struct {
 
-	// Allows users to set headers on API requests.
+	// Allows users to set headers on API requests
 	Headers map[string]string
 }
 
@@ -824,10 +839,11 @@ type ListConfigsOptions struct {
 	// The crn of the resource.
 	ResourceCrn *string `json:"resource_crn,omitempty"`
 
-	// The number of resources for which the configuration can be fetched.
+	// The number of resources to return on the page.
 	Limit *int64 `json:"limit,omitempty"`
 
-	// The start string to fetch the resource.
+	// The starting resource for the page, obtained from a previous list request. If unspecified, the first resource will
+	// be returned.
 	Start *string `json:"start,omitempty"`
 
 	// Filter the resource configurations from the specified sub-account in an enterprise hierarchy.
@@ -842,7 +858,7 @@ type ListConfigsOptions struct {
 	// Filter the resource configurations attached with the specified service tags.
 	ServiceTags *string `json:"service_tags,omitempty"`
 
-	// Allows users to set headers on API requests.
+	// Allows users to set headers on API requests
 	Headers map[string]string
 }
 
@@ -992,7 +1008,7 @@ func (resp *ListConfigsResponse) GetNextStart() (*string, error) {
 // ManualReconcileOptions : The ManualReconcile options.
 type ManualReconcileOptions struct {
 
-	// Allows users to set headers on API requests.
+	// Allows users to set headers on API requests
 	Headers map[string]string
 }
 
@@ -1048,7 +1064,8 @@ type PaginatedNext struct {
 	// The reference to the next page of entries.
 	Href *string `json:"href,omitempty"`
 
-	// the start string for the query to view the page.
+	// The starting resource for the page, obtained from a previous list request. If unspecified, the first resource will
+	// be returned.
 	Start *string `json:"start,omitempty"`
 }
 
@@ -1074,7 +1091,8 @@ type PaginatedPrevious struct {
 	// The reference to the previous page of entries.
 	Href *string `json:"href,omitempty"`
 
-	// the start string for the query to view the page.
+	// The starting resource for the page, obtained from a previous list request. If unspecified, the first resource will
+	// be returned.
 	Start *string `json:"start,omitempty"`
 }
 
@@ -1136,7 +1154,7 @@ type ReplaceSettingsOptions struct {
 	// The additional scope that enables resource collection for Enterprise acccounts.
 	AdditionalScope []AdditionalScope `json:"additional_scope,omitempty"`
 
-	// Allows users to set headers on API requests.
+	// Allows users to set headers on API requests
 	Headers map[string]string
 }
 
@@ -1259,7 +1277,7 @@ func UnmarshalStatusResponse(m map[string]json.RawMessage, result interface{}) (
 	return
 }
 
-// ConfigsPager can be used to simplify the use of the "ListConfigs" method
+// ConfigsPager can be used to simplify the use of the "ListConfigs" method.
 type ConfigsPager struct {
 	hasNext     bool
 	options     *ListConfigsOptions
