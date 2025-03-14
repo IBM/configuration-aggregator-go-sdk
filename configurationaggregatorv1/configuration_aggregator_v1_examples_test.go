@@ -23,13 +23,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/IBM/cloud-go-sdk/configurationaggregatorv1"
+	"github.com/IBM/configuration-aggregator-go-sdk/configurationaggregatorv1"
 	"github.com/IBM/go-sdk-core/v5/core"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-//
 // This file provides an example of how to use the Configuration Aggregator service.
 //
 // The following configuration properties are assumed to be defined:
@@ -41,14 +40,13 @@ import (
 // These configuration properties can be exported as environment variables, or stored
 // in a configuration file and then:
 // export IBM_CREDENTIALS_FILE=<name of configuration file>
-//
 var _ = Describe(`ConfigurationAggregatorV1 Examples Tests`, func() {
 
 	const externalConfigFile = "../configuration_aggregator_v1.env"
 
 	var (
 		configurationAggregatorService *configurationaggregatorv1.ConfigurationAggregatorV1
-		config       map[string]string
+		config                         map[string]string
 	)
 
 	var shouldSkipTest = func() {
@@ -106,16 +104,16 @@ var _ = Describe(`ConfigurationAggregatorV1 Examples Tests`, func() {
 			fmt.Println("\nListConfigs() result:")
 			// begin-list_configs
 			listConfigsOptions := &configurationaggregatorv1.ListConfigsOptions{
-				ConfigType: core.StringPtr("testString"),
-				ServiceName: core.StringPtr("testString"),
+				ConfigType:      core.StringPtr("testString"),
+				ServiceName:     core.StringPtr("testString"),
 				ResourceGroupID: core.StringPtr("testString"),
-				Location: core.StringPtr("testString"),
-				ResourceCrn: core.StringPtr("testString"),
-				Limit: core.Int64Ptr(int64(10)),
-				SubAccount: core.StringPtr("testString"),
-				AccessTags: core.StringPtr("role:admin"),
-				UserTags: core.StringPtr("test"),
-				ServiceTags: core.StringPtr("test:tag"),
+				Location:        core.StringPtr("testString"),
+				ResourceCrn:     core.StringPtr("testString"),
+				Limit:           core.Int64Ptr(int64(10)),
+				SubAccount:      core.StringPtr("testString"),
+				AccessTags:      core.StringPtr("role:admin"),
+				UserTags:        core.StringPtr("test"),
+				ServiceTags:     core.StringPtr("test:tag"),
 			}
 
 			pager, err := configurationAggregatorService.NewConfigsPager(listConfigsOptions)
@@ -140,13 +138,13 @@ var _ = Describe(`ConfigurationAggregatorV1 Examples Tests`, func() {
 			// begin-replace_settings
 
 			profileTemplateModel := &configurationaggregatorv1.ProfileTemplate{
-				ID: core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57"),
+				ID:               core.StringPtr("ProfileTemplate-adb55769-ae22-4c60-aead-bd1f84f93c57"),
 				TrustedProfileID: core.StringPtr("Profile-39acf232-8969-4c32-9838-83eb60a037f7"),
 			}
 
 			additionalScopeModel := &configurationaggregatorv1.AdditionalScope{
-				Type: core.StringPtr("Enterprise"),
-				EnterpriseID: core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61"),
+				Type:            core.StringPtr("Enterprise"),
+				EnterpriseID:    core.StringPtr("2c99aed413954f93b7cf7ce9fda6de61"),
 				ProfileTemplate: profileTemplateModel,
 			}
 
