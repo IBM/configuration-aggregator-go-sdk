@@ -138,7 +138,20 @@ func getResourceCollectionStatus() {
 	fmt.Println(getResourceCollectionStatusResponseCode.StatusCode)
 }
 
+func ManualConfigReconcile() {
+	fmt.Println("Executing the Manual Configuration Reconcile Function")
+	manualConfigReconcileOptions := configAggregatorInstance.NewManualReconcileOptions()
+	manualConfigReconcileResponse, manualConfigReconcileResponseCode, err := configAggregatorInstance.ManualReconcile(manualConfigReconcileOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+	}
+	ManualConfigReconcile, _ := json.MarshalIndent(manualConfigReconcileResponse, "", "  ")
+	fmt.Println(string(ManualConfigReconcile))
+	fmt.Println(manualConfigReconcileResponseCode.StatusCode)
+}
+
 func main() {
+
 	authToken := "<authToken>"
 	guid := "<guid>"
 	region := "<region>"
@@ -146,6 +159,6 @@ func main() {
 	replaceSettings("your_trusted_profile_id", true, []string{"all"})
 	getSettings()
 	getResourceCollectionStatus()
+	ManualConfigReconcile()
 	listConfigs()
-
 }
