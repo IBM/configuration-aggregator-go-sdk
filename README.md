@@ -1,7 +1,7 @@
 Build Status
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-# IBM Cloud Configuration Aggregator Go SDK Version 0.0.4
+# IBM Cloud Configuration Aggregator Go SDK Version 0.0.5
 Go client library to interact with the various IBM Cloud Configuration Aggregator API SDK APIs.
 
 Disclaimer: this SDK is being released initially as a **pre-release** version.
@@ -47,10 +47,10 @@ Configuration Aggregator | configurationaggregatorv1
 
 * An [IBM Cloud][ibm-cloud-onboarding] account.
 * An IAM API key to allow the SDK to access your account. Create one [here](https://cloud.ibm.com/iam/apikeys).
-* Go version 1.20 or above.
+* Go version 1.23 or above.
 
 ## Installation
-The current version of this SDK: 0.0.4
+The current version of this SDK: 0.0.5
 
 ### Go modules  
 If your application uses Go modules for dependency management (recommended), just add an import for each service 
@@ -92,7 +92,7 @@ import (
 
 func main() {
 	authenticator := &core.IamAuthenticator{
-		ApiKey: "<IBM_CLOUD_API_KEY>",
+		ApiKey: "<IBM_CLOUD_API_KEY>", // pragma: allowlist secret
 		URL:    "https://iam.cloud.ibm.com",
 	}
 	instanceID := "provide_your_instance_id"
@@ -137,7 +137,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
+	
+	manualConfigReconcileOptions := configAggregatorInstance.NewManualReconcileOptions()
+	manualConfigReconcileResponse, manualConfigReconcileResponseCode, err := configAggregatorInstance.ManualReconcile(manualConfigReconcileOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+	}
+	ManualConfigReconcile, _ := json.MarshalIndent(manualConfigReconcileResponse, "", "  ")
+	fmt.Println(string(ManualConfigReconcile))
+	
 	var allResults []configurationaggregatorv1.Config
 	for pager.HasNext() {
 		nextPage, err := pager.GetNext()

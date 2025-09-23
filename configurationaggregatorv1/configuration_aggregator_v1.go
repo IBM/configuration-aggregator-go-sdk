@@ -15,7 +15,7 @@
  */
 
 /*
- * IBM OpenAPI SDK Code Generator Version: 3.92.0-af5c89a5-20240617-153232
+ * IBM OpenAPI SDK Code Generator Version: 3.106.0-09823488-20250707-071701
  */
 
 // Package configurationaggregatorv1 : Operations and models for the ConfigurationAggregatorV1 service
@@ -51,7 +51,7 @@ const DefaultServiceName = "configuration_aggregator"
 const ParameterizedServiceURL = "https://{region}.apprapp.cloud.ibm.com/apprapp/config_aggregator/v1/instances/{instance_id}"
 
 var defaultUrlVariables = map[string]string{
-	"region":      "us-south",
+	"region": "us-south",
 	"instance_id": "provide-here-your-appconfig-instance-uuid",
 }
 
@@ -208,12 +208,12 @@ func (configurationAggregator *ConfigurationAggregatorV1) ListConfigsWithContext
 		return
 	}
 
-	for headerName, headerValue := range listConfigsOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ListConfigs")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ListConfigs")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range listConfigsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -307,12 +307,12 @@ func (configurationAggregator *ConfigurationAggregatorV1) ReplaceSettingsWithCon
 		return
 	}
 
-	for headerName, headerValue := range replaceSettingsOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ReplaceSettings")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ReplaceSettings")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range replaceSettingsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -387,12 +387,12 @@ func (configurationAggregator *ConfigurationAggregatorV1) GetSettingsWithContext
 		return
 	}
 
-	for headerName, headerValue := range getSettingsOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetSettings")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetSettings")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range getSettingsOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -447,12 +447,12 @@ func (configurationAggregator *ConfigurationAggregatorV1) GetResourceCollectionS
 		return
 	}
 
-	for headerName, headerValue := range getResourceCollectionStatusOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetResourceCollectionStatus")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetResourceCollectionStatus")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range getResourceCollectionStatusOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -507,12 +507,12 @@ func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcileWithCon
 		return
 	}
 
-	for headerName, headerValue := range manualReconcileOptions.Headers {
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ManualReconcile")
+	for headerName, headerValue := range sdkHeaders {
 		builder.AddHeader(headerName, headerValue)
 	}
 
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ManualReconcile")
-	for headerName, headerValue := range sdkHeaders {
+	for headerName, headerValue := range manualReconcileOptions.Headers {
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
@@ -585,6 +585,12 @@ type About struct {
 	// Tags attached to resources or service IDs by an authorized user in the account. For more information, see
 	// https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#tag-types.
 	ServiceTags []string `json:"service_tags,omitempty"`
+
+	// Creation time of the resource.
+	CreatedAt *strfmt.DateTime `json:"created_at,omitempty"`
+
+	// Catalog Tags associated with the resource.
+	CatalogTags *string `json:"catalog_tags,omitempty"`
 }
 
 // UnmarshalAbout unmarshals an instance of About from the specified map of raw messages.
@@ -648,6 +654,16 @@ func UnmarshalAbout(m map[string]json.RawMessage, result interface{}) (err error
 	err = core.UnmarshalPrimitive(m, "service_tags", &obj.ServiceTags)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "service_tags-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "created_at", &obj.CreatedAt)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "created_at-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "catalog_tags", &obj.CatalogTags)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "catalog_tags-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -723,13 +739,14 @@ func UnmarshalConfig(m map[string]json.RawMessage, result interface{}) (err erro
 }
 
 // Configuration : The configuration of the resource.
+// This type supports additional properties of type interface{}.
 type Configuration struct {
 
-	// Allows users to set arbitrary properties
+	// Allows users to set arbitrary properties of type interface{}.
 	additionalProperties map[string]interface{}
 }
 
-// SetProperty allows the user to set an arbitrary property on an instance of Configuration
+// SetProperty allows the user to set an arbitrary property on an instance of Configuration.
 func (o *Configuration) SetProperty(key string, value interface{}) {
 	if o.additionalProperties == nil {
 		o.additionalProperties = make(map[string]interface{})
@@ -737,7 +754,7 @@ func (o *Configuration) SetProperty(key string, value interface{}) {
 	o.additionalProperties[key] = value
 }
 
-// SetProperties allows the user to set a map of arbitrary properties on an instance of Configuration
+// SetProperties allows the user to set a map of arbitrary properties on an instance of Configuration.
 func (o *Configuration) SetProperties(m map[string]interface{}) {
 	o.additionalProperties = make(map[string]interface{})
 	for k, v := range m {
@@ -745,12 +762,12 @@ func (o *Configuration) SetProperties(m map[string]interface{}) {
 	}
 }
 
-// GetProperty allows the user to retrieve an arbitrary property from an instance of Configuration
+// GetProperty allows the user to retrieve an arbitrary property from an instance of Configuration.
 func (o *Configuration) GetProperty(key string) interface{} {
 	return o.additionalProperties[key]
 }
 
-// GetProperties allows the user to retrieve the map of arbitrary properties from an instance of Configuration
+// GetProperties allows the user to retrieve the map of arbitrary properties from an instance of Configuration.
 func (o *Configuration) GetProperties() map[string]interface{} {
 	return o.additionalProperties
 }
@@ -789,7 +806,7 @@ func UnmarshalConfiguration(m map[string]json.RawMessage, result interface{}) (e
 // GetResourceCollectionStatusOptions : The GetResourceCollectionStatus options.
 type GetResourceCollectionStatusOptions struct {
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -807,7 +824,7 @@ func (options *GetResourceCollectionStatusOptions) SetHeaders(param map[string]s
 // GetSettingsOptions : The GetSettings options.
 type GetSettingsOptions struct {
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -858,7 +875,7 @@ type ListConfigsOptions struct {
 	// Filter the resource configurations attached with the specified service tags.
 	ServiceTags *string `json:"service_tags,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -1008,7 +1025,7 @@ func (resp *ListConfigsResponse) GetNextStart() (*string, error) {
 // ManualReconcileOptions : The ManualReconcile options.
 type ManualReconcileOptions struct {
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -1154,7 +1171,7 @@ type ReplaceSettingsOptions struct {
 	// The additional scope that enables resource collection for Enterprise acccounts.
 	AdditionalScope []AdditionalScope `json:"additional_scope,omitempty"`
 
-	// Allows users to set headers on API requests
+	// Allows users to set headers on API requests.
 	Headers map[string]string
 }
 
@@ -1255,8 +1272,8 @@ type StatusResponse struct {
 // Constants associated with the StatusResponse.Status property.
 // Status of the resource collection.
 const (
-	StatusResponse_Status_Complete   = "complete"
-	StatusResponse_Status_Initiated  = "initiated"
+	StatusResponse_Status_Complete = "complete"
+	StatusResponse_Status_Initiated = "initiated"
 	StatusResponse_Status_Inprogress = "inprogress"
 )
 
@@ -1277,11 +1294,13 @@ func UnmarshalStatusResponse(m map[string]json.RawMessage, result interface{}) (
 	return
 }
 
+//
 // ConfigsPager can be used to simplify the use of the "ListConfigs" method.
+//
 type ConfigsPager struct {
-	hasNext     bool
-	options     *ListConfigsOptions
-	client      *ConfigurationAggregatorV1
+	hasNext bool
+	options *ListConfigsOptions
+	client  *ConfigurationAggregatorV1
 	pageContext struct {
 		next *string
 	}
