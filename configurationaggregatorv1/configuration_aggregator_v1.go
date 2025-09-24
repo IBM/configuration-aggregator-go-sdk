@@ -589,8 +589,9 @@ type About struct {
 	// Creation time of the resource.
 	CreatedAt *strfmt.DateTime `json:"created_at,omitempty"`
 
-	// Catalog Tags associated with the resource.
-	CatalogTags *string `json:"catalog_tags,omitempty"`
+	// Catalog Tags attached to resources or service IDs by an authorized user in the account. For more information, see
+	// https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#tag-types.
+	CatalogTags []string `json:"catalog_tags,omitempty"`
 }
 
 // UnmarshalAbout unmarshals an instance of About from the specified map of raw messages.
