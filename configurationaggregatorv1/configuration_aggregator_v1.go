@@ -15,7 +15,7 @@
  */
 
 /*
- * IBM OpenAPI SDK Code Generator Version: 3.106.0-09823488-20250707-071701
+ * IBM OpenAPI SDK Code Generator Version: 3.108.0-56772134-20251111-102802
  */
 
 // Package configurationaggregatorv1 : Operations and models for the ConfigurationAggregatorV1 service
@@ -571,6 +571,9 @@ type About struct {
 	// The location or region in which the resources are created.
 	Location *string `json:"location" validate:"required"`
 
+	// type of kubernetes cluster.
+	Type *string `json:"type,omitempty"`
+
 	// The unique identifier of the resource.
 	TypeID *string `json:"type_id,omitempty"`
 
@@ -635,6 +638,11 @@ func UnmarshalAbout(m map[string]json.RawMessage, result interface{}) (err error
 	err = core.UnmarshalPrimitive(m, "location", &obj.Location)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "location-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "type", &obj.Type)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "type-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "type_id", &obj.TypeID)
