@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2025.
+ * (C) Copyright IBM Corp. 2026.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 /*
- * IBM OpenAPI SDK Code Generator Version: 3.108.0-56772134-20251111-102802
+ * IBM OpenAPI SDK Code Generator Version: 3.110.0-db88c103-20260121-191126
  */
 
 // Package configurationaggregatorv1 : Operations and models for the ConfigurationAggregatorV1 service
@@ -51,7 +51,7 @@ const DefaultServiceName = "configuration_aggregator"
 const ParameterizedServiceURL = "https://{region}.apprapp.cloud.ibm.com/apprapp/config_aggregator/v1/instances/{instance_id}"
 
 var defaultUrlVariables = map[string]string{
-	"region": "us-south",
+	"region":      "us-south",
 	"instance_id": "provide-here-your-appconfig-instance-uuid",
 }
 
@@ -559,6 +559,9 @@ type About struct {
 	// The resource group id of the resources.
 	ResourceGroupID *string `json:"resource_group_id" validate:"required"`
 
+	// The resource group name of the resources.
+	ResourceGroupName *string `json:"resource_group_name" validate:"required"`
+
 	// The name of the service to which the resources belongs.
 	ServiceName *string `json:"service_name" validate:"required"`
 
@@ -618,6 +621,11 @@ func UnmarshalAbout(m map[string]json.RawMessage, result interface{}) (err error
 	err = core.UnmarshalPrimitive(m, "resource_group_id", &obj.ResourceGroupID)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "resource_group_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "resource_group_name", &obj.ResourceGroupName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_group_name-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "service_name", &obj.ServiceName)
@@ -1275,14 +1283,14 @@ type StatusResponse struct {
 	LastConfigRefreshTime *strfmt.DateTime `json:"last_config_refresh_time,omitempty"`
 
 	// Status of the resource collection.
-	Status *string `json:"status,omitempty"`
+	Status *string `json:"status" validate:"required"`
 }
 
 // Constants associated with the StatusResponse.Status property.
 // Status of the resource collection.
 const (
-	StatusResponse_Status_Complete = "complete"
-	StatusResponse_Status_Initiated = "initiated"
+	StatusResponse_Status_Complete   = "complete"
+	StatusResponse_Status_Initiated  = "initiated"
 	StatusResponse_Status_Inprogress = "inprogress"
 )
 
@@ -1303,13 +1311,11 @@ func UnmarshalStatusResponse(m map[string]json.RawMessage, result interface{}) (
 	return
 }
 
-//
 // ConfigsPager can be used to simplify the use of the "ListConfigs" method.
-//
 type ConfigsPager struct {
-	hasNext bool
-	options *ListConfigsOptions
-	client  *ConfigurationAggregatorV1
+	hasNext     bool
+	options     *ListConfigsOptions
+	client      *ConfigurationAggregatorV1
 	pageContext struct {
 		next *string
 	}
