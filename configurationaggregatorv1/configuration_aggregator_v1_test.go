@@ -1,5 +1,5 @@
 /**
- * (C) Copyright IBM Corp. 2025.
+ * (C) Copyright IBM Corp. 2026.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,14 +68,13 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 		Context(`Using external config, construct service client instances`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"CONFIGURATION_AGGREGATOR_URL": "https://configurationaggregatorv1/api",
+				"CONFIGURATION_AGGREGATOR_URL":       "https://configurationaggregatorv1/api",
 				"CONFIGURATION_AGGREGATOR_AUTH_TYPE": "noauth",
 			}
 
 			It(`Create service client using external config successfully`, func() {
 				SetTestEnvironment(testEnvironment)
-				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1UsingExternalConfig(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
-				})
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1UsingExternalConfig(&configurationaggregatorv1.ConfigurationAggregatorV1Options{})
 				Expect(configurationAggregatorService).ToNot(BeNil())
 				Expect(serviceErr).To(BeNil())
 				ClearTestEnvironment(testEnvironment)
@@ -104,8 +103,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 			})
 			It(`Create service client using external config and set url programatically successfully`, func() {
 				SetTestEnvironment(testEnvironment)
-				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1UsingExternalConfig(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
-				})
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1UsingExternalConfig(&configurationaggregatorv1.ConfigurationAggregatorV1Options{})
 				err := configurationAggregatorService.SetServiceURL("https://testService/api")
 				Expect(err).To(BeNil())
 				Expect(configurationAggregatorService).ToNot(BeNil())
@@ -123,13 +121,12 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 		Context(`Using external config, construct service client instances with error: Invalid Auth`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"CONFIGURATION_AGGREGATOR_URL": "https://configurationaggregatorv1/api",
+				"CONFIGURATION_AGGREGATOR_URL":       "https://configurationaggregatorv1/api",
 				"CONFIGURATION_AGGREGATOR_AUTH_TYPE": "someOtherAuth",
 			}
 
 			SetTestEnvironment(testEnvironment)
-			configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1UsingExternalConfig(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
-			})
+			configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1UsingExternalConfig(&configurationaggregatorv1.ConfigurationAggregatorV1Options{})
 
 			It(`Instantiate service client with error`, func() {
 				Expect(configurationAggregatorService).To(BeNil())
@@ -140,7 +137,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 		Context(`Using external config, construct service client instances with error: Invalid URL`, func() {
 			// Map containing environment variables used in testing.
 			var testEnvironment = map[string]string{
-				"CONFIGURATION_AGGREGATOR_AUTH_TYPE":   "NOAuth",
+				"CONFIGURATION_AGGREGATOR_AUTH_TYPE": "NOAuth",
 			}
 
 			SetTestEnvironment(testEnvironment)
@@ -275,7 +272,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "type": "Type", "type_id": "TypeID", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"], "created_at": "2021-05-12T23:20:50.520Z", "catalog_tags": ["CatalogTags"]}, "config": {}, "config_v2": {}}]}`)
+					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "resource_group_name": "ResourceGroupName", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "type": "Type", "type_id": "TypeID", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"], "created_at": "2021-05-12T23:20:50.520Z", "catalog_tags": ["CatalogTags"]}, "config": {}, "config_v2": {}}]}`)
 				}))
 			})
 			It(`Invoke ListConfigs successfully with retries`, func() {
@@ -350,7 +347,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(200)
-					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "type": "Type", "type_id": "TypeID", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"], "created_at": "2021-05-12T23:20:50.520Z", "catalog_tags": ["CatalogTags"]}, "config": {}, "config_v2": {}}]}`)
+					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "resource_group_name": "ResourceGroupName", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "type": "Type", "type_id": "TypeID", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"], "created_at": "2021-05-12T23:20:50.520Z", "catalog_tags": ["CatalogTags"]}, "config": {}, "config_v2": {}}]}`)
 				}))
 			})
 			It(`Invoke ListConfigs successfully`, func() {
@@ -502,9 +499,9 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					res.WriteHeader(200)
 					requestNumber++
 					if requestNumber == 1 {
-						fmt.Fprintf(res, "%s", `{"next":{"start":"1"},"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","type":"Type","type_id":"TypeID","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"],"created_at":"2021-05-12T23:20:50.520Z","catalog_tags":["CatalogTags"]},"config":{},"config_v2":{}}],"total_count":2,"limit":1}`)
+						fmt.Fprintf(res, "%s", `{"next":{"start":"1"},"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","resource_group_name":"ResourceGroupName","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","type":"Type","type_id":"TypeID","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"],"created_at":"2021-05-12T23:20:50.520Z","catalog_tags":["CatalogTags"]},"config":{},"config_v2":{}}],"total_count":2,"limit":1}`)
 					} else if requestNumber == 2 {
-						fmt.Fprintf(res, "%s", `{"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","type":"Type","type_id":"TypeID","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"],"created_at":"2021-05-12T23:20:50.520Z","catalog_tags":["CatalogTags"]},"config":{},"config_v2":{}}],"total_count":2,"limit":1}`)
+						fmt.Fprintf(res, "%s", `{"configs":[{"about":{"account_id":"AccountID","config_type":"ConfigType","resource_crn":"ResourceCrn","resource_group_id":"ResourceGroupID","resource_group_name":"ResourceGroupName","service_name":"ServiceName","resource_name":"ResourceName","last_config_refresh_time":"2019-01-01T12:00:00.000Z","location":"Location","type":"Type","type_id":"TypeID","access_tags":["role:admin"],"user_tags":["UserTags"],"service_tags":["ServiceTags"],"created_at":"2021-05-12T23:20:50.520Z","catalog_tags":["CatalogTags"]},"config":{},"config_v2":{}}],"total_count":2,"limit":1}`)
 					} else {
 						res.WriteHeader(400)
 					}
@@ -519,16 +516,16 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				Expect(configurationAggregatorService).ToNot(BeNil())
 
 				listConfigsOptionsModel := &configurationaggregatorv1.ListConfigsOptions{
-					ConfigType: core.StringPtr("testString"),
-					ServiceName: core.StringPtr("testString"),
+					ConfigType:      core.StringPtr("testString"),
+					ServiceName:     core.StringPtr("testString"),
 					ResourceGroupID: core.StringPtr("testString"),
-					Location: core.StringPtr("testString"),
-					ResourceCrn: core.StringPtr("testString"),
-					Limit: core.Int64Ptr(int64(10)),
-					SubAccount: core.StringPtr("testString"),
-					AccessTags: core.StringPtr("role:admin"),
-					UserTags: core.StringPtr("test"),
-					ServiceTags: core.StringPtr("test:tag"),
+					Location:        core.StringPtr("testString"),
+					ResourceCrn:     core.StringPtr("testString"),
+					Limit:           core.Int64Ptr(int64(10)),
+					SubAccount:      core.StringPtr("testString"),
+					AccessTags:      core.StringPtr("role:admin"),
+					UserTags:        core.StringPtr("test"),
+					ServiceTags:     core.StringPtr("test:tag"),
 				}
 
 				pager, err := configurationAggregatorService.NewConfigsPager(listConfigsOptionsModel)
@@ -553,16 +550,16 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				Expect(configurationAggregatorService).ToNot(BeNil())
 
 				listConfigsOptionsModel := &configurationaggregatorv1.ListConfigsOptions{
-					ConfigType: core.StringPtr("testString"),
-					ServiceName: core.StringPtr("testString"),
+					ConfigType:      core.StringPtr("testString"),
+					ServiceName:     core.StringPtr("testString"),
 					ResourceGroupID: core.StringPtr("testString"),
-					Location: core.StringPtr("testString"),
-					ResourceCrn: core.StringPtr("testString"),
-					Limit: core.Int64Ptr(int64(10)),
-					SubAccount: core.StringPtr("testString"),
-					AccessTags: core.StringPtr("role:admin"),
-					UserTags: core.StringPtr("test"),
-					ServiceTags: core.StringPtr("test:tag"),
+					Location:        core.StringPtr("testString"),
+					ResourceCrn:     core.StringPtr("testString"),
+					Limit:           core.Int64Ptr(int64(10)),
+					SubAccount:      core.StringPtr("testString"),
+					AccessTags:      core.StringPtr("role:admin"),
+					UserTags:        core.StringPtr("test"),
+					ServiceTags:     core.StringPtr("test:tag"),
 				}
 
 				pager, err := configurationAggregatorService.NewConfigsPager(listConfigsOptionsModel)
