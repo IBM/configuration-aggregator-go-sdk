@@ -1305,6 +1305,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 
 				// Construct an instance of the ManualReconcileOptions model
 				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.ResourceCrns = []string{"testString"}
 				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Expect response parsing to fail since we are receiving a text/plain response
 				result, response, operationErr := configurationAggregatorService.ManualReconcile(manualReconcileOptionsModel)
@@ -1335,13 +1336,29 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					Expect(req.URL.EscapedPath()).To(Equal(manualReconcilePath))
 					Expect(req.Method).To(Equal("POST"))
 
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
 					// Sleep a short time to support a timeout test
 					time.Sleep(100 * time.Millisecond)
 
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(202)
-					fmt.Fprintf(res, "%s", `{"message": "Message"}`)
+					fmt.Fprintf(res, "%s", `{"reconcile_id": "9fab83da-98cb-4f18-a7ba-b6f0435c9673", "href": "Href"}`)
 				}))
 			})
 			It(`Invoke ManualReconcile successfully with retries`, func() {
@@ -1355,6 +1372,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 
 				// Construct an instance of the ManualReconcileOptions model
 				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.ResourceCrns = []string{"testString"}
 				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with a Context to test a timeout error
@@ -1391,10 +1409,26 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 					Expect(req.URL.EscapedPath()).To(Equal(manualReconcilePath))
 					Expect(req.Method).To(Equal("POST"))
 
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
 					// Set mock response
 					res.Header().Set("Content-type", "application/json")
 					res.WriteHeader(202)
-					fmt.Fprintf(res, "%s", `{"message": "Message"}`)
+					fmt.Fprintf(res, "%s", `{"reconcile_id": "9fab83da-98cb-4f18-a7ba-b6f0435c9673", "href": "Href"}`)
 				}))
 			})
 			It(`Invoke ManualReconcile successfully`, func() {
@@ -1413,6 +1447,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 
 				// Construct an instance of the ManualReconcileOptions model
 				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.ResourceCrns = []string{"testString"}
 				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation with valid options model (positive test)
@@ -1432,6 +1467,7 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 
 				// Construct an instance of the ManualReconcileOptions model
 				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.ResourceCrns = []string{"testString"}
 				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 				// Invoke operation with empty URL (negative test)
 				err := configurationAggregatorService.SetServiceURL("")
@@ -1465,10 +1501,571 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 
 				// Construct an instance of the ManualReconcileOptions model
 				manualReconcileOptionsModel := new(configurationaggregatorv1.ManualReconcileOptions)
+				manualReconcileOptionsModel.ResourceCrns = []string{"testString"}
 				manualReconcileOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
 
 				// Invoke operation
 				result, response, operationErr := configurationAggregatorService.ManualReconcile(manualReconcileOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListConfigsNlp(listConfigsNlpOptions *ListConfigsNlpOptions) - Operation response error`, func() {
+		listConfigsNlpPath := "/nlp_resource_query"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listConfigsNlpPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(38))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke ListConfigsNlp with error: Operation response processing error`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the ListConfigsNlpOptions model
+				listConfigsNlpOptionsModel := new(configurationaggregatorv1.ListConfigsNlpOptions)
+				listConfigsNlpOptionsModel.ResourceQuery = core.StringPtr("How many COS buckets are there?")
+				listConfigsNlpOptionsModel.SubAccount = core.StringPtr("12345")
+				listConfigsNlpOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listConfigsNlpOptionsModel.Start = core.StringPtr("testString")
+				listConfigsNlpOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := configurationAggregatorService.ListConfigsNlp(listConfigsNlpOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				configurationAggregatorService.EnableRetries(0, 0)
+				result, response, operationErr = configurationAggregatorService.ListConfigsNlp(listConfigsNlpOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListConfigsNlp(listConfigsNlpOptions *ListConfigsNlpOptions)`, func() {
+		listConfigsNlpPath := "/nlp_resource_query"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listConfigsNlpPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(38))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"resource_query": "How many COS buckets do I have?", "response_summary": "ResponseSummary", "total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"anyKey": "anyValue"}], "remarks": "Remarks", "llm_tokens_used": 13, "response_score": 0.0}`)
+				}))
+			})
+			It(`Invoke ListConfigsNlp successfully with retries`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+				configurationAggregatorService.EnableRetries(0, 0)
+
+				// Construct an instance of the ListConfigsNlpOptions model
+				listConfigsNlpOptionsModel := new(configurationaggregatorv1.ListConfigsNlpOptions)
+				listConfigsNlpOptionsModel.ResourceQuery = core.StringPtr("How many COS buckets are there?")
+				listConfigsNlpOptionsModel.SubAccount = core.StringPtr("12345")
+				listConfigsNlpOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listConfigsNlpOptionsModel.Start = core.StringPtr("testString")
+				listConfigsNlpOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := configurationAggregatorService.ListConfigsNlpWithContext(ctx, listConfigsNlpOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				configurationAggregatorService.DisableRetries()
+				result, response, operationErr := configurationAggregatorService.ListConfigsNlp(listConfigsNlpOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = configurationAggregatorService.ListConfigsNlpWithContext(ctx, listConfigsNlpOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listConfigsNlpPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(38))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"resource_query": "How many COS buckets do I have?", "response_summary": "ResponseSummary", "total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"anyKey": "anyValue"}], "remarks": "Remarks", "llm_tokens_used": 13, "response_score": 0.0}`)
+				}))
+			})
+			It(`Invoke ListConfigsNlp successfully`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := configurationAggregatorService.ListConfigsNlp(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the ListConfigsNlpOptions model
+				listConfigsNlpOptionsModel := new(configurationaggregatorv1.ListConfigsNlpOptions)
+				listConfigsNlpOptionsModel.ResourceQuery = core.StringPtr("How many COS buckets are there?")
+				listConfigsNlpOptionsModel.SubAccount = core.StringPtr("12345")
+				listConfigsNlpOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listConfigsNlpOptionsModel.Start = core.StringPtr("testString")
+				listConfigsNlpOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = configurationAggregatorService.ListConfigsNlp(listConfigsNlpOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke ListConfigsNlp with error: Operation validation and request error`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the ListConfigsNlpOptions model
+				listConfigsNlpOptionsModel := new(configurationaggregatorv1.ListConfigsNlpOptions)
+				listConfigsNlpOptionsModel.ResourceQuery = core.StringPtr("How many COS buckets are there?")
+				listConfigsNlpOptionsModel.SubAccount = core.StringPtr("12345")
+				listConfigsNlpOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listConfigsNlpOptionsModel.Start = core.StringPtr("testString")
+				listConfigsNlpOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := configurationAggregatorService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := configurationAggregatorService.ListConfigsNlp(listConfigsNlpOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the ListConfigsNlpOptions model with no property values
+				listConfigsNlpOptionsModelNew := new(configurationaggregatorv1.ListConfigsNlpOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = configurationAggregatorService.ListConfigsNlp(listConfigsNlpOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke ListConfigsNlp successfully`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the ListConfigsNlpOptions model
+				listConfigsNlpOptionsModel := new(configurationaggregatorv1.ListConfigsNlpOptions)
+				listConfigsNlpOptionsModel.ResourceQuery = core.StringPtr("How many COS buckets are there?")
+				listConfigsNlpOptionsModel.SubAccount = core.StringPtr("12345")
+				listConfigsNlpOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listConfigsNlpOptionsModel.Start = core.StringPtr("testString")
+				listConfigsNlpOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := configurationAggregatorService.ListConfigsNlp(listConfigsNlpOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+
+				// Verify a nil result
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListBatchConfigs(listBatchConfigsOptions *ListBatchConfigsOptions) - Operation response error`, func() {
+		listBatchConfigsPath := "/configs/query"
+		Context(`Using mock server endpoint with invalid JSON response`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listBatchConfigsPath))
+					Expect(req.Method).To(Equal("POST"))
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(38))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprint(res, `} this is not valid json {`)
+				}))
+			})
+			It(`Invoke ListBatchConfigs with error: Operation response processing error`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the Requestconfigs model
+				requestconfigsModel := new(configurationaggregatorv1.Requestconfigs)
+				requestconfigsModel.ResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1")
+				requestconfigsModel.ServiceName = core.StringPtr("testString")
+				requestconfigsModel.ConfigType = []string{"testString"}
+				requestconfigsModel.TypeID = core.StringPtr("testString")
+
+				// Construct an instance of the ListBatchConfigsOptions model
+				listBatchConfigsOptionsModel := new(configurationaggregatorv1.ListBatchConfigsOptions)
+				listBatchConfigsOptionsModel.Configs = []configurationaggregatorv1.Requestconfigs{*requestconfigsModel}
+				listBatchConfigsOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listBatchConfigsOptionsModel.Start = core.StringPtr("testString")
+				listBatchConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Expect response parsing to fail since we are receiving a text/plain response
+				result, response, operationErr := configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+
+				// Enable retries and test again
+				configurationAggregatorService.EnableRetries(0, 0)
+				result, response, operationErr = configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+	})
+	Describe(`ListBatchConfigs(listBatchConfigsOptions *ListBatchConfigsOptions)`, func() {
+		listBatchConfigsPath := "/configs/query"
+		Context(`Using mock server endpoint with timeout`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listBatchConfigsPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(38))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					// Sleep a short time to support a timeout test
+					time.Sleep(100 * time.Millisecond)
+
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "resource_group_name": "ResourceGroupName", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "type": "Type", "type_id": "TypeID", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"], "created_at": "2021-05-12T23:20:50.520Z", "catalog_tags": ["CatalogTags"]}, "config": {}, "config_v2": {}}], "errors": [{"resource_crn": "ResourceCrn", "message": "Message", "error_code": "RESOURCE_NOT_FOUND"}]}`)
+				}))
+			})
+			It(`Invoke ListBatchConfigs successfully with retries`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+				configurationAggregatorService.EnableRetries(0, 0)
+
+				// Construct an instance of the Requestconfigs model
+				requestconfigsModel := new(configurationaggregatorv1.Requestconfigs)
+				requestconfigsModel.ResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1")
+				requestconfigsModel.ServiceName = core.StringPtr("testString")
+				requestconfigsModel.ConfigType = []string{"testString"}
+				requestconfigsModel.TypeID = core.StringPtr("testString")
+
+				// Construct an instance of the ListBatchConfigsOptions model
+				listBatchConfigsOptionsModel := new(configurationaggregatorv1.ListBatchConfigsOptions)
+				listBatchConfigsOptionsModel.Configs = []configurationaggregatorv1.Requestconfigs{*requestconfigsModel}
+				listBatchConfigsOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listBatchConfigsOptionsModel.Start = core.StringPtr("testString")
+				listBatchConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with a Context to test a timeout error
+				ctx, cancelFunc := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc()
+				_, _, operationErr := configurationAggregatorService.ListBatchConfigsWithContext(ctx, listBatchConfigsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+
+				// Disable retries and test again
+				configurationAggregatorService.DisableRetries()
+				result, response, operationErr := configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+				// Re-test the timeout error with retries disabled
+				ctx, cancelFunc2 := context.WithTimeout(context.Background(), 80*time.Millisecond)
+				defer cancelFunc2()
+				_, _, operationErr = configurationAggregatorService.ListBatchConfigsWithContext(ctx, listBatchConfigsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring("deadline exceeded"))
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Verify the contents of the request
+					Expect(req.URL.EscapedPath()).To(Equal(listBatchConfigsPath))
+					Expect(req.Method).To(Equal("POST"))
+
+					// For gzip-disabled operation, verify Content-Encoding is not set.
+					Expect(req.Header.Get("Content-Encoding")).To(BeEmpty())
+
+					// If there is a body, then make sure we can read it
+					bodyBuf := new(bytes.Buffer)
+					if req.Header.Get("Content-Encoding") == "gzip" {
+						body, err := core.NewGzipDecompressionReader(req.Body)
+						Expect(err).To(BeNil())
+						_, err = bodyBuf.ReadFrom(body)
+						Expect(err).To(BeNil())
+					} else {
+						_, err := bodyBuf.ReadFrom(req.Body)
+						Expect(err).To(BeNil())
+					}
+					fmt.Fprintf(GinkgoWriter, "  Request body: %s", bodyBuf.String())
+
+					Expect(req.URL.Query()["limit"]).To(Equal([]string{fmt.Sprint(int64(38))}))
+					Expect(req.URL.Query()["start"]).To(Equal([]string{"testString"}))
+					// Set mock response
+					res.Header().Set("Content-type", "application/json")
+					res.WriteHeader(200)
+					fmt.Fprintf(res, "%s", `{"total_count": 10, "limit": 5, "first": {"href": "Href"}, "prev": {"href": "Href", "start": "Start"}, "next": {"href": "Href", "start": "Start"}, "configs": [{"about": {"account_id": "AccountID", "config_type": "ConfigType", "resource_crn": "ResourceCrn", "resource_group_id": "ResourceGroupID", "resource_group_name": "ResourceGroupName", "service_name": "ServiceName", "resource_name": "ResourceName", "last_config_refresh_time": "2019-01-01T12:00:00.000Z", "location": "Location", "type": "Type", "type_id": "TypeID", "access_tags": ["role:admin"], "user_tags": ["UserTags"], "service_tags": ["ServiceTags"], "created_at": "2021-05-12T23:20:50.520Z", "catalog_tags": ["CatalogTags"]}, "config": {}, "config_v2": {}}], "errors": [{"resource_crn": "ResourceCrn", "message": "Message", "error_code": "RESOURCE_NOT_FOUND"}]}`)
+				}))
+			})
+			It(`Invoke ListBatchConfigs successfully`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Invoke operation with nil options model (negative test)
+				result, response, operationErr := configurationAggregatorService.ListBatchConfigs(nil)
+				Expect(operationErr).NotTo(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+
+				// Construct an instance of the Requestconfigs model
+				requestconfigsModel := new(configurationaggregatorv1.Requestconfigs)
+				requestconfigsModel.ResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1")
+				requestconfigsModel.ServiceName = core.StringPtr("testString")
+				requestconfigsModel.ConfigType = []string{"testString"}
+				requestconfigsModel.TypeID = core.StringPtr("testString")
+
+				// Construct an instance of the ListBatchConfigsOptions model
+				listBatchConfigsOptionsModel := new(configurationaggregatorv1.ListBatchConfigsOptions)
+				listBatchConfigsOptionsModel.Configs = []configurationaggregatorv1.Requestconfigs{*requestconfigsModel}
+				listBatchConfigsOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listBatchConfigsOptionsModel.Start = core.StringPtr("testString")
+				listBatchConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation with valid options model (positive test)
+				result, response, operationErr = configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptionsModel)
+				Expect(operationErr).To(BeNil())
+				Expect(response).ToNot(BeNil())
+				Expect(result).ToNot(BeNil())
+
+			})
+			It(`Invoke ListBatchConfigs with error: Operation validation and request error`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the Requestconfigs model
+				requestconfigsModel := new(configurationaggregatorv1.Requestconfigs)
+				requestconfigsModel.ResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1")
+				requestconfigsModel.ServiceName = core.StringPtr("testString")
+				requestconfigsModel.ConfigType = []string{"testString"}
+				requestconfigsModel.TypeID = core.StringPtr("testString")
+
+				// Construct an instance of the ListBatchConfigsOptions model
+				listBatchConfigsOptionsModel := new(configurationaggregatorv1.ListBatchConfigsOptions)
+				listBatchConfigsOptionsModel.Configs = []configurationaggregatorv1.Requestconfigs{*requestconfigsModel}
+				listBatchConfigsOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listBatchConfigsOptionsModel.Start = core.StringPtr("testString")
+				listBatchConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+				// Invoke operation with empty URL (negative test)
+				err := configurationAggregatorService.SetServiceURL("")
+				Expect(err).To(BeNil())
+				result, response, operationErr := configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptionsModel)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(operationErr.Error()).To(ContainSubstring(core.ERRORMSG_SERVICE_URL_MISSING))
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+				// Construct a second instance of the ListBatchConfigsOptions model with no property values
+				listBatchConfigsOptionsModelNew := new(configurationaggregatorv1.ListBatchConfigsOptions)
+				// Invoke operation with invalid model (negative test)
+				result, response, operationErr = configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptionsModelNew)
+				Expect(operationErr).ToNot(BeNil())
+				Expect(response).To(BeNil())
+				Expect(result).To(BeNil())
+			})
+			AfterEach(func() {
+				testServer.Close()
+			})
+		})
+		Context(`Using mock server endpoint with missing response body`, func() {
+			BeforeEach(func() {
+				testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+					defer GinkgoRecover()
+
+					// Set success status code with no respoonse body
+					res.WriteHeader(200)
+				}))
+			})
+			It(`Invoke ListBatchConfigs successfully`, func() {
+				configurationAggregatorService, serviceErr := configurationaggregatorv1.NewConfigurationAggregatorV1(&configurationaggregatorv1.ConfigurationAggregatorV1Options{
+					URL:           testServer.URL,
+					Authenticator: &core.NoAuthAuthenticator{},
+				})
+				Expect(serviceErr).To(BeNil())
+				Expect(configurationAggregatorService).ToNot(BeNil())
+
+				// Construct an instance of the Requestconfigs model
+				requestconfigsModel := new(configurationaggregatorv1.Requestconfigs)
+				requestconfigsModel.ResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1")
+				requestconfigsModel.ServiceName = core.StringPtr("testString")
+				requestconfigsModel.ConfigType = []string{"testString"}
+				requestconfigsModel.TypeID = core.StringPtr("testString")
+
+				// Construct an instance of the ListBatchConfigsOptions model
+				listBatchConfigsOptionsModel := new(configurationaggregatorv1.ListBatchConfigsOptions)
+				listBatchConfigsOptionsModel.Configs = []configurationaggregatorv1.Requestconfigs{*requestconfigsModel}
+				listBatchConfigsOptionsModel.Limit = core.Int64Ptr(int64(38))
+				listBatchConfigsOptionsModel.Start = core.StringPtr("testString")
+				listBatchConfigsOptionsModel.Headers = map[string]string{"x-custom-header": "x-custom-value"}
+
+				// Invoke operation
+				result, response, operationErr := configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptionsModel)
 				Expect(operationErr).To(BeNil())
 				Expect(response).ToNot(BeNil())
 
@@ -1499,6 +2096,49 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 				getSettingsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(getSettingsOptionsModel).ToNot(BeNil())
 				Expect(getSettingsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewListBatchConfigsOptions successfully`, func() {
+				// Construct an instance of the Requestconfigs model
+				requestconfigsModel := new(configurationaggregatorv1.Requestconfigs)
+				Expect(requestconfigsModel).ToNot(BeNil())
+				requestconfigsModel.ResourceCrn = core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1")
+				requestconfigsModel.ServiceName = core.StringPtr("testString")
+				requestconfigsModel.ConfigType = []string{"testString"}
+				requestconfigsModel.TypeID = core.StringPtr("testString")
+				Expect(requestconfigsModel.ResourceCrn).To(Equal(core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1")))
+				Expect(requestconfigsModel.ServiceName).To(Equal(core.StringPtr("testString")))
+				Expect(requestconfigsModel.ConfigType).To(Equal([]string{"testString"}))
+				Expect(requestconfigsModel.TypeID).To(Equal(core.StringPtr("testString")))
+
+				// Construct an instance of the ListBatchConfigsOptions model
+				listBatchConfigsOptionsConfigs := []configurationaggregatorv1.Requestconfigs{}
+				listBatchConfigsOptionsModel := configurationAggregatorService.NewListBatchConfigsOptions(listBatchConfigsOptionsConfigs)
+				listBatchConfigsOptionsModel.SetConfigs([]configurationaggregatorv1.Requestconfigs{*requestconfigsModel})
+				listBatchConfigsOptionsModel.SetLimit(int64(38))
+				listBatchConfigsOptionsModel.SetStart("testString")
+				listBatchConfigsOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(listBatchConfigsOptionsModel).ToNot(BeNil())
+				Expect(listBatchConfigsOptionsModel.Configs).To(Equal([]configurationaggregatorv1.Requestconfigs{*requestconfigsModel}))
+				Expect(listBatchConfigsOptionsModel.Limit).To(Equal(core.Int64Ptr(int64(38))))
+				Expect(listBatchConfigsOptionsModel.Start).To(Equal(core.StringPtr("testString")))
+				Expect(listBatchConfigsOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
+			})
+			It(`Invoke NewListConfigsNlpOptions successfully`, func() {
+				// Construct an instance of the ListConfigsNlpOptions model
+				listConfigsNlpOptionsResourceQuery := "How many COS buckets are there?"
+				listConfigsNlpOptionsSubAccount := "12345"
+				listConfigsNlpOptionsModel := configurationAggregatorService.NewListConfigsNlpOptions(listConfigsNlpOptionsResourceQuery, listConfigsNlpOptionsSubAccount)
+				listConfigsNlpOptionsModel.SetResourceQuery("How many COS buckets are there?")
+				listConfigsNlpOptionsModel.SetSubAccount("12345")
+				listConfigsNlpOptionsModel.SetLimit(int64(38))
+				listConfigsNlpOptionsModel.SetStart("testString")
+				listConfigsNlpOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
+				Expect(listConfigsNlpOptionsModel).ToNot(BeNil())
+				Expect(listConfigsNlpOptionsModel.ResourceQuery).To(Equal(core.StringPtr("How many COS buckets are there?")))
+				Expect(listConfigsNlpOptionsModel.SubAccount).To(Equal(core.StringPtr("12345")))
+				Expect(listConfigsNlpOptionsModel.Limit).To(Equal(core.Int64Ptr(int64(38))))
+				Expect(listConfigsNlpOptionsModel.Start).To(Equal(core.StringPtr("testString")))
+				Expect(listConfigsNlpOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewListConfigsOptions successfully`, func() {
 				// Construct an instance of the ListConfigsOptions model
@@ -1532,8 +2172,10 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 			It(`Invoke NewManualReconcileOptions successfully`, func() {
 				// Construct an instance of the ManualReconcileOptions model
 				manualReconcileOptionsModel := configurationAggregatorService.NewManualReconcileOptions()
+				manualReconcileOptionsModel.SetResourceCrns([]string{"testString"})
 				manualReconcileOptionsModel.SetHeaders(map[string]string{"foo": "bar"})
 				Expect(manualReconcileOptionsModel).ToNot(BeNil())
+				Expect(manualReconcileOptionsModel.ResourceCrns).To(Equal([]string{"testString"}))
 				Expect(manualReconcileOptionsModel.Headers).To(Equal(map[string]string{"foo": "bar"}))
 			})
 			It(`Invoke NewReplaceSettingsOptions successfully`, func() {
@@ -1607,6 +2249,27 @@ var _ = Describe(`ConfigurationAggregatorV1`, func() {
 
 			var result *configurationaggregatorv1.ProfileTemplate
 			err = configurationaggregatorv1.UnmarshalProfileTemplate(raw, &result)
+			Expect(err).To(BeNil())
+			Expect(result).ToNot(BeNil())
+			Expect(result).To(Equal(model))
+		})
+		It(`Invoke UnmarshalRequestconfigs successfully`, func() {
+			// Construct an instance of the model.
+			model := new(configurationaggregatorv1.Requestconfigs)
+			model.ResourceCrn = core.StringPtr("testString")
+			model.ServiceName = core.StringPtr("testString")
+			model.ConfigType = []string{"testString"}
+			model.TypeID = core.StringPtr("testString")
+
+			b, err := json.Marshal(model)
+			Expect(err).To(BeNil())
+
+			var raw map[string]json.RawMessage
+			err = json.Unmarshal(b, &raw)
+			Expect(err).To(BeNil())
+
+			var result *configurationaggregatorv1.Requestconfigs
+			err = configurationaggregatorv1.UnmarshalRequestconfigs(raw, &result)
 			Expect(err).To(BeNil())
 			Expect(result).ToNot(BeNil())
 			Expect(result).To(Equal(model))
