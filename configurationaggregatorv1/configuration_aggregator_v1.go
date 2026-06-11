@@ -15,7 +15,7 @@
  */
 
 /*
- * IBM OpenAPI SDK Code Generator Version: 3.110.0-db88c103-20260121-191126
+ * IBM OpenAPI SDK Code Generator Version: 3.114.3-943fbc81-20260603-173645
  */
 
 // Package configurationaggregatorv1 : Operations and models for the ConfigurationAggregatorV1 service
@@ -516,6 +516,17 @@ func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcileWithCon
 		builder.AddHeader(headerName, headerValue)
 	}
 	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	body := make(map[string]interface{})
+	if manualReconcileOptions.ResourceCrns != nil {
+		body["resource_crns"] = manualReconcileOptions.ResourceCrns
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
 
 	request, err := builder.Build()
 	if err != nil {
@@ -532,6 +543,89 @@ func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcileWithCon
 	}
 	if rawResponse != nil {
 		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalManualReconcileResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// ListBatchConfigs : List of configurations of the resources requested for set of crn(s)
+// List the resource configurations (requested for set of CRNs) collected as part of Configuration Aggregator.
+func (configurationAggregator *ConfigurationAggregatorV1) ListBatchConfigs(listBatchConfigsOptions *ListBatchConfigsOptions) (result *ListConfigsQueryResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.ListBatchConfigsWithContext(context.Background(), listBatchConfigsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListBatchConfigsWithContext is an alternate form of the ListBatchConfigs method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) ListBatchConfigsWithContext(ctx context.Context, listBatchConfigsOptions *ListBatchConfigsOptions) (result *ListConfigsQueryResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(listBatchConfigsOptions, "listBatchConfigsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(listBatchConfigsOptions, "listBatchConfigsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/configs/query`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ListBatchConfigs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range listBatchConfigsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	if listBatchConfigsOptions.Limit != nil {
+		builder.AddQuery("limit", fmt.Sprint(*listBatchConfigsOptions.Limit))
+	}
+	if listBatchConfigsOptions.Start != nil {
+		builder.AddQuery("start", fmt.Sprint(*listBatchConfigsOptions.Start))
+	}
+
+	body := make(map[string]interface{})
+	if listBatchConfigsOptions.Configs != nil {
+		body["configs"] = listBatchConfigsOptions.Configs
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_batch_configs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalListConfigsQueryResponse)
 		if err != nil {
 			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
 			return
@@ -820,6 +914,47 @@ func UnmarshalConfiguration(m map[string]json.RawMessage, result interface{}) (e
 	return
 }
 
+// Error : Error of each individual resource not found in aggregator.
+type Error struct {
+	// The unique CRN of the IBM Cloud resource.
+	ResourceCrn *string `json:"resource_crn" validate:"required"`
+
+	// The extended description that describes the solution to the problem.
+	Message *string `json:"message" validate:"required"`
+
+	// The code that is used to identify the problem that caused the error.
+	ErrorCode *string `json:"error_code" validate:"required"`
+}
+
+// Constants associated with the Error.ErrorCode property.
+// The code that is used to identify the problem that caused the error.
+const (
+	Error_ErrorCode_DbTimeout        = "DB_TIMEOUT"
+	Error_ErrorCode_ResourceNotFound = "RESOURCE_NOT_FOUND"
+)
+
+// UnmarshalError unmarshals an instance of Error from the specified map of raw messages.
+func UnmarshalError(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Error)
+	err = core.UnmarshalPrimitive(m, "resource_crn", &obj.ResourceCrn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_crn-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "message", &obj.Message)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "message-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "error_code", &obj.ErrorCode)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "error_code-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // GetResourceCollectionStatusOptions : The GetResourceCollectionStatus options.
 type GetResourceCollectionStatusOptions struct {
 
@@ -852,6 +987,53 @@ func (*ConfigurationAggregatorV1) NewGetSettingsOptions() *GetSettingsOptions {
 
 // SetHeaders : Allow user to set Headers
 func (options *GetSettingsOptions) SetHeaders(param map[string]string) *GetSettingsOptions {
+	options.Headers = param
+	return options
+}
+
+// ListBatchConfigsOptions : The ListBatchConfigs options.
+type ListBatchConfigsOptions struct {
+	// The List of resources requested as part of List Configs Query API.
+	Configs []Requestconfigs `json:"configs" validate:"required"`
+
+	// The number of resources to return on the page.
+	Limit *int64 `json:"limit,omitempty"`
+
+	// The starting resource for the page, obtained from a previous list request. If unspecified, the first resource will
+	// be returned.
+	Start *string `json:"start,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListBatchConfigsOptions : Instantiate ListBatchConfigsOptions
+func (*ConfigurationAggregatorV1) NewListBatchConfigsOptions(configs []Requestconfigs) *ListBatchConfigsOptions {
+	return &ListBatchConfigsOptions{
+		Configs: configs,
+	}
+}
+
+// SetConfigs : Allow user to set Configs
+func (_options *ListBatchConfigsOptions) SetConfigs(configs []Requestconfigs) *ListBatchConfigsOptions {
+	_options.Configs = configs
+	return _options
+}
+
+// SetLimit : Allow user to set Limit
+func (_options *ListBatchConfigsOptions) SetLimit(limit int64) *ListBatchConfigsOptions {
+	_options.Limit = core.Int64Ptr(limit)
+	return _options
+}
+
+// SetStart : Allow user to set Start
+func (_options *ListBatchConfigsOptions) SetStart(start string) *ListBatchConfigsOptions {
+	_options.Start = core.StringPtr(start)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListBatchConfigsOptions) SetHeaders(param map[string]string) *ListBatchConfigsOptions {
 	options.Headers = param
 	return options
 }
@@ -973,6 +1155,72 @@ func (options *ListConfigsOptions) SetHeaders(param map[string]string) *ListConf
 	return options
 }
 
+// ListConfigsQueryResponse : List configs batch api response.
+type ListConfigsQueryResponse struct {
+	// The total number of resources present.
+	TotalCount *int64 `json:"total_count,omitempty"`
+
+	// The maximum number of resources retrieved per page.
+	Limit *int64 `json:"limit,omitempty"`
+
+	// The reference to the first page of entries.
+	First *PaginatedFirst `json:"first,omitempty"`
+
+	// The reference to the previous page of entries. If absent, this is the first page.
+	Prev *PaginatedPrevious `json:"prev,omitempty"`
+
+	// The reference to the next page of entries. If absent, this is the last page.
+	Next *PaginatedNext `json:"next,omitempty"`
+
+	// Array of resource configurations.
+	Configs []Config `json:"configs,omitempty"`
+
+	// Array of errors for not found resource configurations.
+	Errors []Error `json:"errors,omitempty"`
+}
+
+// UnmarshalListConfigsQueryResponse unmarshals an instance of ListConfigsQueryResponse from the specified map of raw messages.
+func UnmarshalListConfigsQueryResponse(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ListConfigsQueryResponse)
+	err = core.UnmarshalPrimitive(m, "total_count", &obj.TotalCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_count-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "limit", &obj.Limit)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "limit-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "first", &obj.First, UnmarshalPaginatedFirst)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "first-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "prev", &obj.Prev, UnmarshalPaginatedPrevious)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "prev-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "next", &obj.Next, UnmarshalPaginatedNext)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "next-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "configs", &obj.Configs, UnmarshalConfig)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "configs-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "errors", &obj.Errors, UnmarshalError)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "errors-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // ListConfigsResponse : List configs api response.
 type ListConfigsResponse struct {
 	// The total number of resources present.
@@ -1041,6 +1289,9 @@ func (resp *ListConfigsResponse) GetNextStart() (*string, error) {
 
 // ManualReconcileOptions : The ManualReconcile options.
 type ManualReconcileOptions struct {
+	// Specific resource CRNs to reconcile (maximum ~20). The resource CRNs should be the instance CRN of the service.
+	// Subresource CRNs (such as a Secrets Manager secret) are not supported.
+	ResourceCrns []string `json:"resource_crns,omitempty"`
 
 	// Allows users to set headers on API requests.
 	Headers map[string]string
@@ -1051,6 +1302,12 @@ func (*ConfigurationAggregatorV1) NewManualReconcileOptions() *ManualReconcileOp
 	return &ManualReconcileOptions{}
 }
 
+// SetResourceCrns : Allow user to set ResourceCrns
+func (_options *ManualReconcileOptions) SetResourceCrns(resourceCrns []string) *ManualReconcileOptions {
+	_options.ResourceCrns = resourceCrns
+	return _options
+}
+
 // SetHeaders : Allow user to set Headers
 func (options *ManualReconcileOptions) SetHeaders(param map[string]string) *ManualReconcileOptions {
 	options.Headers = param
@@ -1059,16 +1316,24 @@ func (options *ManualReconcileOptions) SetHeaders(param map[string]string) *Manu
 
 // ManualReconcileResponse : The reconciliation response.
 type ManualReconcileResponse struct {
-	// The status message of the manual reconciliation request.
-	Message *string `json:"message,omitempty"`
+	// Unique identifier for the reconciliation request.
+	ReconcileID *strfmt.UUID `json:"reconcile_id,omitempty"`
+
+	// URL to check the status of the reconciliation request.
+	Href *string `json:"href,omitempty"`
 }
 
 // UnmarshalManualReconcileResponse unmarshals an instance of ManualReconcileResponse from the specified map of raw messages.
 func UnmarshalManualReconcileResponse(m map[string]json.RawMessage, result interface{}) (err error) {
 	obj := new(ManualReconcileResponse)
-	err = core.UnmarshalPrimitive(m, "message", &obj.Message)
+	err = core.UnmarshalPrimitive(m, "reconcile_id", &obj.ReconcileID)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "message-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "reconcile_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "href", &obj.Href)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "href-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
@@ -1305,6 +1570,48 @@ func UnmarshalStatusResponse(m map[string]json.RawMessage, result interface{}) (
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// Requestconfigs : The details of each resource requested as part of List Configs Query API.
+type Requestconfigs struct {
+	// The unique CRN of the IBM Cloud resource.
+	ResourceCrn *string `json:"resource_crn,omitempty"`
+
+	// The name of the service to which the resource belongs.
+	ServiceName *string `json:"service_name,omitempty"`
+
+	// The list of type for resource configuration that are to be retrieved.
+	ConfigType []string `json:"config_type,omitempty"`
+
+	// The unique identifier for each IBM resource.
+	TypeID *string `json:"type_id,omitempty"`
+}
+
+// UnmarshalRequestconfigs unmarshals an instance of Requestconfigs from the specified map of raw messages.
+func UnmarshalRequestconfigs(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(Requestconfigs)
+	err = core.UnmarshalPrimitive(m, "resource_crn", &obj.ResourceCrn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_crn-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_name", &obj.ServiceName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "config_type", &obj.ConfigType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "config_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "type_id", &obj.TypeID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "type_id-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
