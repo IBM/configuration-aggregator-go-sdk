@@ -150,6 +150,27 @@ func ManualConfigReconcile() {
 	fmt.Println(manualConfigReconcileResponseCode.StatusCode)
 }
 
+func listBatchConfigs(configs []configurationaggregatorv1.Requestconfigs, limit int64, start string) {
+	fmt.Println("Executing the List Batch Configs Function")
+
+	// Create options with the array of configs
+	listBatchConfigsOptions := configAggregatorInstance.NewListBatchConfigsOptions(configs)
+	listBatchConfigsOptions.SetLimit(limit)
+	listBatchConfigsOptions.SetStart(start)
+
+	// Call the function
+	listBatchConfigsResponse, listBatchConfigsResponseCode, err := configAggregatorInstance.ListBatchConfigs(listBatchConfigsOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+
+	// Print results
+	listBatchConfigs, _ := json.MarshalIndent(listBatchConfigsResponse, "", "  ")
+	fmt.Println(string(listBatchConfigs))
+	fmt.Println(listBatchConfigsResponseCode.StatusCode)
+}
+
 func main() {
 
 	authToken := "<authToken>"
@@ -161,4 +182,6 @@ func main() {
 	getResourceCollectionStatus()
 	ManualConfigReconcile()
 	listConfigs()
+	listBatchConfigs([]configurationaggregatorv1.Requestconfigs{}, 100, "page token")
+
 }

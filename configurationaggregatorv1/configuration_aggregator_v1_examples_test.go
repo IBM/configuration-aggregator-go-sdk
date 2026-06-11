@@ -224,5 +224,30 @@ var _ = Describe(`ConfigurationAggregatorV1 Examples Tests`, func() {
 			Expect(response.StatusCode).To(Equal(202))
 			Expect(manualReconcileResponse).ToNot(BeNil())
 		})
+		It(`ListBatchConfigs request example`, func() {
+			fmt.Println("\nListBatchConfigs() result:")
+			// begin-list_batch_configs
+
+			requestconfigsModel := &configurationaggregatorv1.Requestconfigs{
+				ResourceCrn: core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1"),
+			}
+
+			listBatchConfigsOptions := configurationAggregatorService.NewListBatchConfigsOptions(
+				[]configurationaggregatorv1.Requestconfigs{*requestconfigsModel},
+			)
+
+			listConfigsQueryResponse, response, err := configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptions)
+			if err != nil {
+				panic(err)
+			}
+			b, _ := json.MarshalIndent(listConfigsQueryResponse, "", "  ")
+			fmt.Println(string(b))
+
+			// end-list_batch_configs
+
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(listConfigsQueryResponse).ToNot(BeNil())
+		})
 	})
 })

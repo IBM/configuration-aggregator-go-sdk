@@ -234,12 +234,39 @@ var _ = Describe(`ConfigurationAggregatorV1 Integration Tests`, func() {
 			shouldSkipTest()
 		})
 		It(`ManualReconcile(manualReconcileOptions *ManualReconcileOptions)`, func() {
-			manualReconcileOptions := &configurationaggregatorv1.ManualReconcileOptions{}
+			manualReconcileOptions := &configurationaggregatorv1.ManualReconcileOptions{
+				ResourceCrns: []string{"testString"},
+			}
 
 			manualReconcileResponse, response, err := configurationAggregatorService.ManualReconcile(manualReconcileOptions)
 			Expect(err).To(BeNil())
 			Expect(response.StatusCode).To(Equal(202))
 			Expect(manualReconcileResponse).ToNot(BeNil())
+		})
+	})
+
+	Describe(`ListBatchConfigs - List of configurations of the resources requested for set of crn(s)`, func() {
+		BeforeEach(func() {
+			shouldSkipTest()
+		})
+		It(`ListBatchConfigs(listBatchConfigsOptions *ListBatchConfigsOptions)`, func() {
+			requestconfigsModel := &configurationaggregatorv1.Requestconfigs{
+				ResourceCrn: core.StringPtr("crn:v1:staging:public:cloud-object-storage:global:a/c1d20fee2fe24c42b8ef6583283d2dcf:fc8de30c-43a5-407b-8c61-2b86dd820922:bucket:cos-pra-1"),
+				ServiceName: core.StringPtr("testString"),
+				ConfigType:  []string{"testString"},
+				TypeID:      core.StringPtr("testString"),
+			}
+
+			listBatchConfigsOptions := &configurationaggregatorv1.ListBatchConfigsOptions{
+				Configs: []configurationaggregatorv1.Requestconfigs{*requestconfigsModel},
+				Limit:   core.Int64Ptr(int64(38)),
+				Start:   core.StringPtr("testString"),
+			}
+
+			listConfigsQueryResponse, response, err := configurationAggregatorService.ListBatchConfigs(listBatchConfigsOptions)
+			Expect(err).To(BeNil())
+			Expect(response.StatusCode).To(Equal(200))
+			Expect(listConfigsQueryResponse).ToNot(BeNil())
 		})
 	})
 })
