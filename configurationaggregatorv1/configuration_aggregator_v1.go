@@ -15,7 +15,7 @@
  */
 
 /*
- * IBM OpenAPI SDK Code Generator Version: 3.114.3-943fbc81-20260603-173645
+ * IBM OpenAPI SDK Code Generator Version: 3.117.2-f568b7d6-20261016-181021
  */
 
 // Package configurationaggregatorv1 : Operations and models for the ConfigurationAggregatorV1 service
@@ -25,6 +25,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"reflect"
 	"time"
@@ -51,7 +52,7 @@ const DefaultServiceName = "configuration_aggregator"
 const ParameterizedServiceURL = "https://{region}.apprapp.cloud.ibm.com/apprapp/config_aggregator/v1/instances/{instance_id}"
 
 var defaultUrlVariables = map[string]string{
-	"region":      "us-south",
+	"region": "us-south",
 	"instance_id": "provide-here-your-appconfig-instance-uuid",
 }
 
@@ -183,8 +184,608 @@ func (configurationAggregator *ConfigurationAggregatorV1) DisableRetries() {
 	configurationAggregator.Service.DisableRetries()
 }
 
-// ListConfigs : List of configurations of the resources
-// List the resource configurations collected as part of Configuration Aggregator.
+// NlpQueryConfigs : Query configs
+// Retrieve config details based on the intent from user's query and generate response using large language model.
+func (configurationAggregator *ConfigurationAggregatorV1) NlpQueryConfigs(nlpQueryConfigsOptions *NlpQueryConfigsOptions) (result *NLPQueryResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.NlpQueryConfigsWithContext(context.Background(), nlpQueryConfigsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// NlpQueryConfigsWithContext is an alternate form of the NlpQueryConfigs method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) NlpQueryConfigsWithContext(ctx context.Context, nlpQueryConfigsOptions *NlpQueryConfigsOptions) (result *NLPQueryResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(nlpQueryConfigsOptions, "nlpQueryConfigsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(nlpQueryConfigsOptions, "nlpQueryConfigsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/nlp_resource_query/query`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "NlpQueryConfigs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range nlpQueryConfigsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	if nlpQueryConfigsOptions.Limit != nil {
+		builder.AddQuery("limit", fmt.Sprint(*nlpQueryConfigsOptions.Limit))
+	}
+	if nlpQueryConfigsOptions.Start != nil {
+		builder.AddQuery("start", fmt.Sprint(*nlpQueryConfigsOptions.Start))
+	}
+
+	body := make(map[string]interface{})
+	if nlpQueryConfigsOptions.ResourceQuery != nil {
+		body["resource_query"] = nlpQueryConfigsOptions.ResourceQuery
+	}
+	if nlpQueryConfigsOptions.SubAccount != nil {
+		body["sub_account"] = nlpQueryConfigsOptions.SubAccount
+	}
+	if nlpQueryConfigsOptions.HistoryID != nil {
+		body["history_id"] = nlpQueryConfigsOptions.HistoryID
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "nlp_query_configs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalNLPQueryResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// ListNlpChatHistory : List chat history
+// Retrieve the chat history for the NLP resource query.
+func (configurationAggregator *ConfigurationAggregatorV1) ListNlpChatHistory(listNlpChatHistoryOptions *ListNlpChatHistoryOptions) (result *ListChatHistoryResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.ListNlpChatHistoryWithContext(context.Background(), listNlpChatHistoryOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListNlpChatHistoryWithContext is an alternate form of the ListNlpChatHistory method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) ListNlpChatHistoryWithContext(ctx context.Context, listNlpChatHistoryOptions *ListNlpChatHistoryOptions) (result *ListChatHistoryResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(listNlpChatHistoryOptions, "listNlpChatHistoryOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/nlp_resource_query/history`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ListNlpChatHistory")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range listNlpChatHistoryOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_nlp_chat_history", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalListChatHistoryResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateNlpChatHistory : Create chat history
+// Create a new chat history entry for the NLP resource query.
+func (configurationAggregator *ConfigurationAggregatorV1) CreateNlpChatHistory(createNlpChatHistoryOptions *CreateNlpChatHistoryOptions) (result *ChatHistoryResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.CreateNlpChatHistoryWithContext(context.Background(), createNlpChatHistoryOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateNlpChatHistoryWithContext is an alternate form of the CreateNlpChatHistory method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) CreateNlpChatHistoryWithContext(ctx context.Context, createNlpChatHistoryOptions *CreateNlpChatHistoryOptions) (result *ChatHistoryResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createNlpChatHistoryOptions, "createNlpChatHistoryOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createNlpChatHistoryOptions, "createNlpChatHistoryOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/nlp_resource_query/history`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "CreateNlpChatHistory")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range createNlpChatHistoryOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	body := make(map[string]interface{})
+	if createNlpChatHistoryOptions.Title != nil {
+		body["title"] = createNlpChatHistoryOptions.Title
+	}
+	if createNlpChatHistoryOptions.Query != nil {
+		body["query"] = createNlpChatHistoryOptions.Query
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_nlp_chat_history", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalChatHistoryResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// UpdateNlpChatHistory : Update chat history
+// Update or rename an existing chat history entry for the NLP resource query.
+func (configurationAggregator *ConfigurationAggregatorV1) UpdateNlpChatHistory(updateNlpChatHistoryOptions *UpdateNlpChatHistoryOptions) (result *ChatHistoryResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.UpdateNlpChatHistoryWithContext(context.Background(), updateNlpChatHistoryOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// UpdateNlpChatHistoryWithContext is an alternate form of the UpdateNlpChatHistory method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) UpdateNlpChatHistoryWithContext(ctx context.Context, updateNlpChatHistoryOptions *UpdateNlpChatHistoryOptions) (result *ChatHistoryResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(updateNlpChatHistoryOptions, "updateNlpChatHistoryOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(updateNlpChatHistoryOptions, "updateNlpChatHistoryOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.PUT)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/nlp_resource_query/history`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "UpdateNlpChatHistory")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range updateNlpChatHistoryOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	body := make(map[string]interface{})
+	if updateNlpChatHistoryOptions.ID != nil {
+		body["id"] = updateNlpChatHistoryOptions.ID
+	}
+	if updateNlpChatHistoryOptions.Title != nil {
+		body["title"] = updateNlpChatHistoryOptions.Title
+	}
+	if updateNlpChatHistoryOptions.Query != nil {
+		body["query"] = updateNlpChatHistoryOptions.Query
+	}
+	if updateNlpChatHistoryOptions.Deleted != nil {
+		body["deleted"] = updateNlpChatHistoryOptions.Deleted
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "update_nlp_chat_history", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalChatHistoryResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// ListNlpResourceQueryJobs : List jobs
+// Get all jobs for NLP resource query.
+func (configurationAggregator *ConfigurationAggregatorV1) ListNlpResourceQueryJobs(listNlpResourceQueryJobsOptions *ListNlpResourceQueryJobsOptions) (result *JobDetailResponseCollection, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.ListNlpResourceQueryJobsWithContext(context.Background(), listNlpResourceQueryJobsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ListNlpResourceQueryJobsWithContext is an alternate form of the ListNlpResourceQueryJobs method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) ListNlpResourceQueryJobsWithContext(ctx context.Context, listNlpResourceQueryJobsOptions *ListNlpResourceQueryJobsOptions) (result *JobDetailResponseCollection, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(listNlpResourceQueryJobsOptions, "listNlpResourceQueryJobsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/nlp_resource_query/jobs`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ListNlpResourceQueryJobs")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range listNlpResourceQueryJobsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	if listNlpResourceQueryJobsOptions.SubAccount != nil {
+		builder.AddQuery("sub_account", fmt.Sprint(*listNlpResourceQueryJobsOptions.SubAccount))
+	}
+	if listNlpResourceQueryJobsOptions.Status != nil {
+		builder.AddQuery("status", fmt.Sprint(*listNlpResourceQueryJobsOptions.Status))
+	}
+	if listNlpResourceQueryJobsOptions.Limit != nil {
+		builder.AddQuery("limit", fmt.Sprint(*listNlpResourceQueryJobsOptions.Limit))
+	}
+	if listNlpResourceQueryJobsOptions.Offset != nil {
+		builder.AddQuery("offset", fmt.Sprint(*listNlpResourceQueryJobsOptions.Offset))
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "list_nlp_resource_query_jobs", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalJobDetailResponseCollection)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// CreateNlpResourceQueryJob : Create job
+// Create a new job to process NLP resource query asynchronously.
+func (configurationAggregator *ConfigurationAggregatorV1) CreateNlpResourceQueryJob(createNlpResourceQueryJobOptions *CreateNlpResourceQueryJobOptions) (result *JobDetailResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.CreateNlpResourceQueryJobWithContext(context.Background(), createNlpResourceQueryJobOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// CreateNlpResourceQueryJobWithContext is an alternate form of the CreateNlpResourceQueryJob method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) CreateNlpResourceQueryJobWithContext(ctx context.Context, createNlpResourceQueryJobOptions *CreateNlpResourceQueryJobOptions) (result *JobDetailResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(createNlpResourceQueryJobOptions, "createNlpResourceQueryJobOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(createNlpResourceQueryJobOptions, "createNlpResourceQueryJobOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/nlp_resource_query/jobs`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "CreateNlpResourceQueryJob")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range createNlpResourceQueryJobOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	body := make(map[string]interface{})
+	if createNlpResourceQueryJobOptions.ResourceQuery != nil {
+		body["resource_query"] = createNlpResourceQueryJobOptions.ResourceQuery
+	}
+	if createNlpResourceQueryJobOptions.SubAccount != nil {
+		body["sub_account"] = createNlpResourceQueryJobOptions.SubAccount
+	}
+	if createNlpResourceQueryJobOptions.HistoryID != nil {
+		body["history_id"] = createNlpResourceQueryJobOptions.HistoryID
+	}
+	if createNlpResourceQueryJobOptions.FileType != nil {
+		body["file_type"] = createNlpResourceQueryJobOptions.FileType
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "create_nlp_resource_query_job", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalJobDetailResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetNlpResourceQueryJob : Get job
+// Retrieve the detail of a specific job by its ID.
+func (configurationAggregator *ConfigurationAggregatorV1) GetNlpResourceQueryJob(getNlpResourceQueryJobOptions *GetNlpResourceQueryJobOptions) (result *JobDetailResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.GetNlpResourceQueryJobWithContext(context.Background(), getNlpResourceQueryJobOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetNlpResourceQueryJobWithContext is an alternate form of the GetNlpResourceQueryJob method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) GetNlpResourceQueryJobWithContext(ctx context.Context, getNlpResourceQueryJobOptions *GetNlpResourceQueryJobOptions) (result *JobDetailResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(getNlpResourceQueryJobOptions, "getNlpResourceQueryJobOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(getNlpResourceQueryJobOptions, "getNlpResourceQueryJobOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"job_id": *getNlpResourceQueryJobOptions.JobID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/nlp_resource_query/jobs/{job_id}`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetNlpResourceQueryJob")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range getNlpResourceQueryJobOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_nlp_resource_query_job", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalJobDetailResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// DownloadNlpJobResult : Download job result
+// Download the result file of a completed job.
+func (configurationAggregator *ConfigurationAggregatorV1) DownloadNlpJobResult(downloadNlpJobResultOptions *DownloadNlpJobResultOptions) (result io.ReadCloser, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.DownloadNlpJobResultWithContext(context.Background(), downloadNlpJobResultOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// DownloadNlpJobResultWithContext is an alternate form of the DownloadNlpJobResult method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) DownloadNlpJobResultWithContext(ctx context.Context, downloadNlpJobResultOptions *DownloadNlpJobResultOptions) (result io.ReadCloser, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(downloadNlpJobResultOptions, "downloadNlpJobResultOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(downloadNlpJobResultOptions, "downloadNlpJobResultOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	pathParamsMap := map[string]string{
+		"job_id": *downloadNlpJobResultOptions.JobID,
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/nlp_resource_query/jobs/{job_id}/result`, pathParamsMap)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "DownloadNlpJobResult")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range downloadNlpJobResultOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/octet-stream")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	response, err = configurationAggregator.Service.Request(request, &result)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "download_nlp_job_result", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+
+	return
+}
+
+// ListConfigs : List configurations
+// Retrieve the list of resource configurations collected as part of Configuration Aggregator.
 func (configurationAggregator *ConfigurationAggregatorV1) ListConfigs(listConfigsOptions *ListConfigsOptions) (result *ListConfigsResponse, response *core.DetailedResponse, err error) {
 	result, response, err = configurationAggregator.ListConfigsWithContext(context.Background(), listConfigsOptions)
 	err = core.RepurposeSDKProblem(err, "")
@@ -277,283 +878,7 @@ func (configurationAggregator *ConfigurationAggregatorV1) ListConfigsWithContext
 	return
 }
 
-// ReplaceSettings : Replace the settings for Configuration Aggregator
-// Replace the settings for resource collection as part of the Configuration Aggregator feature.
-func (configurationAggregator *ConfigurationAggregatorV1) ReplaceSettings(replaceSettingsOptions *ReplaceSettingsOptions) (result *SettingsResponse, response *core.DetailedResponse, err error) {
-	result, response, err = configurationAggregator.ReplaceSettingsWithContext(context.Background(), replaceSettingsOptions)
-	err = core.RepurposeSDKProblem(err, "")
-	return
-}
-
-// ReplaceSettingsWithContext is an alternate form of the ReplaceSettings method which supports a Context parameter
-func (configurationAggregator *ConfigurationAggregatorV1) ReplaceSettingsWithContext(ctx context.Context, replaceSettingsOptions *ReplaceSettingsOptions) (result *SettingsResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateNotNil(replaceSettingsOptions, "replaceSettingsOptions cannot be nil")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
-		return
-	}
-	err = core.ValidateStruct(replaceSettingsOptions, "replaceSettingsOptions")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.PUT)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/settings`, nil)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
-		return
-	}
-
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ReplaceSettings")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	for headerName, headerValue := range replaceSettingsOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json")
-
-	body := make(map[string]interface{})
-	if replaceSettingsOptions.ResourceCollectionEnabled != nil {
-		body["resource_collection_enabled"] = replaceSettingsOptions.ResourceCollectionEnabled
-	}
-	if replaceSettingsOptions.TrustedProfileID != nil {
-		body["trusted_profile_id"] = replaceSettingsOptions.TrustedProfileID
-	}
-	if replaceSettingsOptions.Regions != nil {
-		body["regions"] = replaceSettingsOptions.Regions
-	}
-	if replaceSettingsOptions.AdditionalScope != nil {
-		body["additional_scope"] = replaceSettingsOptions.AdditionalScope
-	}
-	_, err = builder.SetBodyContentJSON(body)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
-		return
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = configurationAggregator.Service.Request(request, &rawResponse)
-	if err != nil {
-		core.EnrichHTTPProblem(err, "replace_settings", getServiceComponentInfo())
-		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSettingsResponse)
-		if err != nil {
-			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// GetSettings : Retrieve the settings for Configuration Aggregator feature
-// Retrieve settings for resource collection in Configuration Aggregator.
-func (configurationAggregator *ConfigurationAggregatorV1) GetSettings(getSettingsOptions *GetSettingsOptions) (result *SettingsResponse, response *core.DetailedResponse, err error) {
-	result, response, err = configurationAggregator.GetSettingsWithContext(context.Background(), getSettingsOptions)
-	err = core.RepurposeSDKProblem(err, "")
-	return
-}
-
-// GetSettingsWithContext is an alternate form of the GetSettings method which supports a Context parameter
-func (configurationAggregator *ConfigurationAggregatorV1) GetSettingsWithContext(ctx context.Context, getSettingsOptions *GetSettingsOptions) (result *SettingsResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(getSettingsOptions, "getSettingsOptions")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.GET)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/settings`, nil)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
-		return
-	}
-
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetSettings")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	for headerName, headerValue := range getSettingsOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-
-	request, err := builder.Build()
-	if err != nil {
-		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = configurationAggregator.Service.Request(request, &rawResponse)
-	if err != nil {
-		core.EnrichHTTPProblem(err, "get_settings", getServiceComponentInfo())
-		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSettingsResponse)
-		if err != nil {
-			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// GetResourceCollectionStatus : Retrieve status for resource collection in Configuration Aggregator
-// Retrieve the status of the resource collection as part of Configuration Aggregator.
-func (configurationAggregator *ConfigurationAggregatorV1) GetResourceCollectionStatus(getResourceCollectionStatusOptions *GetResourceCollectionStatusOptions) (result *StatusResponse, response *core.DetailedResponse, err error) {
-	result, response, err = configurationAggregator.GetResourceCollectionStatusWithContext(context.Background(), getResourceCollectionStatusOptions)
-	err = core.RepurposeSDKProblem(err, "")
-	return
-}
-
-// GetResourceCollectionStatusWithContext is an alternate form of the GetResourceCollectionStatus method which supports a Context parameter
-func (configurationAggregator *ConfigurationAggregatorV1) GetResourceCollectionStatusWithContext(ctx context.Context, getResourceCollectionStatusOptions *GetResourceCollectionStatusOptions) (result *StatusResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(getResourceCollectionStatusOptions, "getResourceCollectionStatusOptions")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.GET)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/resource_collection_status`, nil)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
-		return
-	}
-
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetResourceCollectionStatus")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	for headerName, headerValue := range getResourceCollectionStatusOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-
-	request, err := builder.Build()
-	if err != nil {
-		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = configurationAggregator.Service.Request(request, &rawResponse)
-	if err != nil {
-		core.EnrichHTTPProblem(err, "get_resource_collection_status", getServiceComponentInfo())
-		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalStatusResponse)
-		if err != nil {
-			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// ManualReconcile : Manually trigger the recording of the Configuration items as part of Configuration Aggregator
-// Manually trigger the recording of the Configuration items as part of Configuration Aggregator.
-func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcile(manualReconcileOptions *ManualReconcileOptions) (result *ManualReconcileResponse, response *core.DetailedResponse, err error) {
-	result, response, err = configurationAggregator.ManualReconcileWithContext(context.Background(), manualReconcileOptions)
-	err = core.RepurposeSDKProblem(err, "")
-	return
-}
-
-// ManualReconcileWithContext is an alternate form of the ManualReconcile method which supports a Context parameter
-func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcileWithContext(ctx context.Context, manualReconcileOptions *ManualReconcileOptions) (result *ManualReconcileResponse, response *core.DetailedResponse, err error) {
-	err = core.ValidateStruct(manualReconcileOptions, "manualReconcileOptions")
-	if err != nil {
-		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
-		return
-	}
-
-	builder := core.NewRequestBuilder(core.POST)
-	builder = builder.WithContext(ctx)
-	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
-	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/reconcile`, nil)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
-		return
-	}
-
-	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ManualReconcile")
-	for headerName, headerValue := range sdkHeaders {
-		builder.AddHeader(headerName, headerValue)
-	}
-
-	for headerName, headerValue := range manualReconcileOptions.Headers {
-		builder.AddHeader(headerName, headerValue)
-	}
-	builder.AddHeader("Accept", "application/json")
-	builder.AddHeader("Content-Type", "application/json")
-
-	body := make(map[string]interface{})
-	if manualReconcileOptions.ResourceCrns != nil {
-		body["resource_crns"] = manualReconcileOptions.ResourceCrns
-	}
-	_, err = builder.SetBodyContentJSON(body)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
-		return
-	}
-
-	request, err := builder.Build()
-	if err != nil {
-		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
-		return
-	}
-
-	var rawResponse map[string]json.RawMessage
-	response, err = configurationAggregator.Service.Request(request, &rawResponse)
-	if err != nil {
-		core.EnrichHTTPProblem(err, "manual_reconcile", getServiceComponentInfo())
-		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
-		return
-	}
-	if rawResponse != nil {
-		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalManualReconcileResponse)
-		if err != nil {
-			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
-			return
-		}
-		response.Result = result
-	}
-
-	return
-}
-
-// ListBatchConfigs : List of configurations of the resources requested for set of crn(s)
+// ListBatchConfigs : List configurations for set of crn(s)
 // List the resource configurations (requested for set of CRNs) collected as part of Configuration Aggregator.
 func (configurationAggregator *ConfigurationAggregatorV1) ListBatchConfigs(listBatchConfigsOptions *ListBatchConfigsOptions) (result *ListConfigsQueryResponse, response *core.DetailedResponse, err error) {
 	result, response, err = configurationAggregator.ListBatchConfigsWithContext(context.Background(), listBatchConfigsOptions)
@@ -635,6 +960,285 @@ func (configurationAggregator *ConfigurationAggregatorV1) ListBatchConfigsWithCo
 
 	return
 }
+
+// ReplaceSettings : Update settings
+// Update resource aggregation settings.
+func (configurationAggregator *ConfigurationAggregatorV1) ReplaceSettings(replaceSettingsOptions *ReplaceSettingsOptions) (result *SettingsResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.ReplaceSettingsWithContext(context.Background(), replaceSettingsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ReplaceSettingsWithContext is an alternate form of the ReplaceSettings method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) ReplaceSettingsWithContext(ctx context.Context, replaceSettingsOptions *ReplaceSettingsOptions) (result *SettingsResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateNotNil(replaceSettingsOptions, "replaceSettingsOptions cannot be nil")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "unexpected-nil-param", common.GetComponentInfo())
+		return
+	}
+	err = core.ValidateStruct(replaceSettingsOptions, "replaceSettingsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.PUT)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/settings`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ReplaceSettings")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range replaceSettingsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	body := make(map[string]interface{})
+	if replaceSettingsOptions.ResourceCollectionEnabled != nil {
+		body["resource_collection_enabled"] = replaceSettingsOptions.ResourceCollectionEnabled
+	}
+	if replaceSettingsOptions.RealtimeConfigEnabled != nil {
+		body["realtime_config_enabled"] = replaceSettingsOptions.RealtimeConfigEnabled
+	}
+	if replaceSettingsOptions.TrustedProfileID != nil {
+		body["trusted_profile_id"] = replaceSettingsOptions.TrustedProfileID
+	}
+	if replaceSettingsOptions.Regions != nil {
+		body["regions"] = replaceSettingsOptions.Regions
+	}
+	if replaceSettingsOptions.AdditionalScope != nil {
+		body["additional_scope"] = replaceSettingsOptions.AdditionalScope
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "replace_settings", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSettingsResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetSettings : Get settings
+// Retrieve settings for resource collection in Configuration Aggregator.
+func (configurationAggregator *ConfigurationAggregatorV1) GetSettings(getSettingsOptions *GetSettingsOptions) (result *SettingsResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.GetSettingsWithContext(context.Background(), getSettingsOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetSettingsWithContext is an alternate form of the GetSettings method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) GetSettingsWithContext(ctx context.Context, getSettingsOptions *GetSettingsOptions) (result *SettingsResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getSettingsOptions, "getSettingsOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/settings`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetSettings")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range getSettingsOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_settings", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalSettingsResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// GetResourceCollectionStatus : Get resource collection status
+// Retrieve the status of the resource collection as part of Configuration Aggregator.
+func (configurationAggregator *ConfigurationAggregatorV1) GetResourceCollectionStatus(getResourceCollectionStatusOptions *GetResourceCollectionStatusOptions) (result *StatusResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.GetResourceCollectionStatusWithContext(context.Background(), getResourceCollectionStatusOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// GetResourceCollectionStatusWithContext is an alternate form of the GetResourceCollectionStatus method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) GetResourceCollectionStatusWithContext(ctx context.Context, getResourceCollectionStatusOptions *GetResourceCollectionStatusOptions) (result *StatusResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(getResourceCollectionStatusOptions, "getResourceCollectionStatusOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.GET)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/resource_collection_status`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "GetResourceCollectionStatus")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range getResourceCollectionStatusOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "get_resource_collection_status", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalStatusResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
+
+// ManualReconcile : Manual reconcile
+// Manually trigger the recording of the Configuration items as part of Configuration Aggregator.
+func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcile(manualReconcileOptions *ManualReconcileOptions) (result *ManualReconcileResponse, response *core.DetailedResponse, err error) {
+	result, response, err = configurationAggregator.ManualReconcileWithContext(context.Background(), manualReconcileOptions)
+	err = core.RepurposeSDKProblem(err, "")
+	return
+}
+
+// ManualReconcileWithContext is an alternate form of the ManualReconcile method which supports a Context parameter
+func (configurationAggregator *ConfigurationAggregatorV1) ManualReconcileWithContext(ctx context.Context, manualReconcileOptions *ManualReconcileOptions) (result *ManualReconcileResponse, response *core.DetailedResponse, err error) {
+	err = core.ValidateStruct(manualReconcileOptions, "manualReconcileOptions")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "struct-validation-error", common.GetComponentInfo())
+		return
+	}
+
+	builder := core.NewRequestBuilder(core.POST)
+	builder = builder.WithContext(ctx)
+	builder.EnableGzipCompression = configurationAggregator.GetEnableGzipCompression()
+	_, err = builder.ResolveRequestURL(configurationAggregator.Service.Options.URL, `/reconcile`, nil)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "url-resolve-error", common.GetComponentInfo())
+		return
+	}
+
+	sdkHeaders := common.GetSdkHeaders("configuration_aggregator", "V1", "ManualReconcile")
+	for headerName, headerValue := range sdkHeaders {
+		builder.AddHeader(headerName, headerValue)
+	}
+
+	for headerName, headerValue := range manualReconcileOptions.Headers {
+		builder.AddHeader(headerName, headerValue)
+	}
+	builder.AddHeader("Accept", "application/json")
+	builder.AddHeader("Content-Type", "application/json")
+
+	body := make(map[string]interface{})
+	if manualReconcileOptions.ResourceCrns != nil {
+		body["resource_crns"] = manualReconcileOptions.ResourceCrns
+	}
+	_, err = builder.SetBodyContentJSON(body)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "set-json-body-error", common.GetComponentInfo())
+		return
+	}
+
+	request, err := builder.Build()
+	if err != nil {
+		err = core.SDKErrorf(err, "", "build-error", common.GetComponentInfo())
+		return
+	}
+
+	var rawResponse map[string]json.RawMessage
+	response, err = configurationAggregator.Service.Request(request, &rawResponse)
+	if err != nil {
+		core.EnrichHTTPProblem(err, "manual_reconcile", getServiceComponentInfo())
+		err = core.SDKErrorf(err, "", "http-request-err", common.GetComponentInfo())
+		return
+	}
+	if rawResponse != nil {
+		err = core.UnmarshalModel(rawResponse, "", &result, UnmarshalManualReconcileResponse)
+		if err != nil {
+			err = core.SDKErrorf(err, "", "unmarshal-resp-error", common.GetComponentInfo())
+			return
+		}
+		response.Result = result
+	}
+
+	return
+}
 func getServiceComponentInfo() *core.ProblemComponent {
 	return core.NewProblemComponent(DefaultServiceName, "1.0.0")
 }
@@ -676,22 +1280,22 @@ type About struct {
 
 	// Access tags specified by the user for the resource. For more information, see
 	// https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#tag-types.
-	AccessTags []string `json:"access_tags,omitempty"`
+	AccessTags []string `json:"access_tags" validate:"required"`
 
 	// User tags specified by the user for the resource. For more information, see
 	// https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#tag-types.
-	UserTags []string `json:"user_tags,omitempty"`
+	UserTags []string `json:"user_tags" validate:"required"`
 
 	// Tags attached to resources or service IDs by an authorized user in the account. For more information, see
 	// https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#tag-types.
-	ServiceTags []string `json:"service_tags,omitempty"`
+	ServiceTags []string `json:"service_tags" validate:"required"`
 
 	// Creation time of the resource.
 	CreatedAt *strfmt.DateTime `json:"created_at,omitempty"`
 
 	// Catalog Tags attached to resources or service IDs by an authorized user in the account. For more information, see
 	// https://cloud.ibm.com/docs/account?topic=account-tag&interface=ui#tag-types.
-	CatalogTags []string `json:"catalog_tags,omitempty"`
+	CatalogTags []string `json:"catalog_tags" validate:"required"`
 }
 
 // UnmarshalAbout unmarshals an instance of About from the specified map of raw messages.
@@ -815,6 +1419,40 @@ func UnmarshalAdditionalScope(m map[string]json.RawMessage, result interface{}) 
 	return
 }
 
+// ChatHistoryResponse : A partial representation of a chat history entry.
+type ChatHistoryResponse struct {
+	// A unique identifier.
+	ID *string `json:"id" validate:"required"`
+
+	// Title for Chat.
+	Title *string `json:"title" validate:"required"`
+
+	// The natural language based resource query string.
+	Query *string `json:"query" validate:"required"`
+}
+
+// UnmarshalChatHistoryResponse unmarshals an instance of ChatHistoryResponse from the specified map of raw messages.
+func UnmarshalChatHistoryResponse(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ChatHistoryResponse)
+	err = core.UnmarshalPrimitive(m, "id", &obj.ID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "title", &obj.Title)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "title-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "query", &obj.Query)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "query-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // Config : Configuration of each individual resource.
 type Config struct {
 	// The basic metadata fetched from the query API.
@@ -914,6 +1552,137 @@ func UnmarshalConfiguration(m map[string]json.RawMessage, result interface{}) (e
 	return
 }
 
+// CreateNlpChatHistoryOptions : The CreateNlpChatHistory options.
+type CreateNlpChatHistoryOptions struct {
+	// Title for Chat.
+	Title *string `json:"title" validate:"required"`
+
+	// The natural language based resource query string.
+	Query *string `json:"query" validate:"required"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewCreateNlpChatHistoryOptions : Instantiate CreateNlpChatHistoryOptions
+func (*ConfigurationAggregatorV1) NewCreateNlpChatHistoryOptions(title string, query string) *CreateNlpChatHistoryOptions {
+	return &CreateNlpChatHistoryOptions{
+		Title: core.StringPtr(title),
+		Query: core.StringPtr(query),
+	}
+}
+
+// SetTitle : Allow user to set Title
+func (_options *CreateNlpChatHistoryOptions) SetTitle(title string) *CreateNlpChatHistoryOptions {
+	_options.Title = core.StringPtr(title)
+	return _options
+}
+
+// SetQuery : Allow user to set Query
+func (_options *CreateNlpChatHistoryOptions) SetQuery(query string) *CreateNlpChatHistoryOptions {
+	_options.Query = core.StringPtr(query)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateNlpChatHistoryOptions) SetHeaders(param map[string]string) *CreateNlpChatHistoryOptions {
+	options.Headers = param
+	return options
+}
+
+// CreateNlpResourceQueryJobOptions : The CreateNlpResourceQueryJob options.
+type CreateNlpResourceQueryJobOptions struct {
+	// The natural language based resource query string.
+	ResourceQuery *string `json:"resource_query" validate:"required"`
+
+	// Filter the resource configurations from the specified sub-account in an enterprise hierarchy.
+	SubAccount *string `json:"sub_account" validate:"required"`
+
+	// A unique identifier.
+	HistoryID *string `json:"history_id" validate:"required"`
+
+	// Contanis the file type for download e.g. json/csv.
+	FileType *string `json:"file_type" validate:"required"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// Constants associated with the CreateNlpResourceQueryJobOptions.FileType property.
+// Contanis the file type for download e.g. json/csv.
+const (
+	CreateNlpResourceQueryJobOptions_FileType_Csv = "csv"
+	CreateNlpResourceQueryJobOptions_FileType_JSON = "json"
+)
+
+// NewCreateNlpResourceQueryJobOptions : Instantiate CreateNlpResourceQueryJobOptions
+func (*ConfigurationAggregatorV1) NewCreateNlpResourceQueryJobOptions(resourceQuery string, subAccount string, historyID string, fileType string) *CreateNlpResourceQueryJobOptions {
+	return &CreateNlpResourceQueryJobOptions{
+		ResourceQuery: core.StringPtr(resourceQuery),
+		SubAccount: core.StringPtr(subAccount),
+		HistoryID: core.StringPtr(historyID),
+		FileType: core.StringPtr(fileType),
+	}
+}
+
+// SetResourceQuery : Allow user to set ResourceQuery
+func (_options *CreateNlpResourceQueryJobOptions) SetResourceQuery(resourceQuery string) *CreateNlpResourceQueryJobOptions {
+	_options.ResourceQuery = core.StringPtr(resourceQuery)
+	return _options
+}
+
+// SetSubAccount : Allow user to set SubAccount
+func (_options *CreateNlpResourceQueryJobOptions) SetSubAccount(subAccount string) *CreateNlpResourceQueryJobOptions {
+	_options.SubAccount = core.StringPtr(subAccount)
+	return _options
+}
+
+// SetHistoryID : Allow user to set HistoryID
+func (_options *CreateNlpResourceQueryJobOptions) SetHistoryID(historyID string) *CreateNlpResourceQueryJobOptions {
+	_options.HistoryID = core.StringPtr(historyID)
+	return _options
+}
+
+// SetFileType : Allow user to set FileType
+func (_options *CreateNlpResourceQueryJobOptions) SetFileType(fileType string) *CreateNlpResourceQueryJobOptions {
+	_options.FileType = core.StringPtr(fileType)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *CreateNlpResourceQueryJobOptions) SetHeaders(param map[string]string) *CreateNlpResourceQueryJobOptions {
+	options.Headers = param
+	return options
+}
+
+// DownloadNlpJobResultOptions : The DownloadNlpJobResult options.
+type DownloadNlpJobResultOptions struct {
+	// The unique identifier of the job.
+	JobID *string `json:"job_id" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewDownloadNlpJobResultOptions : Instantiate DownloadNlpJobResultOptions
+func (*ConfigurationAggregatorV1) NewDownloadNlpJobResultOptions(jobID string) *DownloadNlpJobResultOptions {
+	return &DownloadNlpJobResultOptions{
+		JobID: core.StringPtr(jobID),
+	}
+}
+
+// SetJobID : Allow user to set JobID
+func (_options *DownloadNlpJobResultOptions) SetJobID(jobID string) *DownloadNlpJobResultOptions {
+	_options.JobID = core.StringPtr(jobID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *DownloadNlpJobResultOptions) SetHeaders(param map[string]string) *DownloadNlpJobResultOptions {
+	options.Headers = param
+	return options
+}
+
 // Error : Error of each individual resource not found in aggregator.
 type Error struct {
 	// The unique CRN of the IBM Cloud resource.
@@ -929,8 +1698,8 @@ type Error struct {
 // Constants associated with the Error.ErrorCode property.
 // The code that is used to identify the problem that caused the error.
 const (
-	Error_ErrorCode_DbTimeout        = "DB_TIMEOUT"
-	Error_ErrorCode_ResourceNotFound = "RESOURCE_NOT_FOUND"
+	Error_ErrorCode_DbTimeout = "db_timeout"
+	Error_ErrorCode_ResourceNotFound = "resource_not_found"
 )
 
 // UnmarshalError unmarshals an instance of Error from the specified map of raw messages.
@@ -953,6 +1722,34 @@ func UnmarshalError(m map[string]json.RawMessage, result interface{}) (err error
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
+}
+
+// GetNlpResourceQueryJobOptions : The GetNlpResourceQueryJob options.
+type GetNlpResourceQueryJobOptions struct {
+	// The unique identifier of the job.
+	JobID *string `json:"job_id" validate:"required,ne="`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewGetNlpResourceQueryJobOptions : Instantiate GetNlpResourceQueryJobOptions
+func (*ConfigurationAggregatorV1) NewGetNlpResourceQueryJobOptions(jobID string) *GetNlpResourceQueryJobOptions {
+	return &GetNlpResourceQueryJobOptions{
+		JobID: core.StringPtr(jobID),
+	}
+}
+
+// SetJobID : Allow user to set JobID
+func (_options *GetNlpResourceQueryJobOptions) SetJobID(jobID string) *GetNlpResourceQueryJobOptions {
+	_options.JobID = core.StringPtr(jobID)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *GetNlpResourceQueryJobOptions) SetHeaders(param map[string]string) *GetNlpResourceQueryJobOptions {
+	options.Headers = param
+	return options
 }
 
 // GetResourceCollectionStatusOptions : The GetResourceCollectionStatus options.
@@ -991,10 +1788,137 @@ func (options *GetSettingsOptions) SetHeaders(param map[string]string) *GetSetti
 	return options
 }
 
+// JobDetailResponse : The response body for job status details.
+type JobDetailResponse struct {
+	// A unique identifier.
+	JobID *string `json:"job_id" validate:"required"`
+
+	// Filter the resource configurations from the specified sub-account in an enterprise hierarchy.
+	SubAccount *string `json:"sub_account" validate:"required"`
+
+	// The natural language based resource query string.
+	ResourceQuery *string `json:"resource_query" validate:"required"`
+
+	// The current status of the job.
+	Status *string `json:"status" validate:"required"`
+
+	// Contanis the file type for download e.g. json/csv.
+	FileType *string `json:"file_type,omitempty"`
+
+	// Any error message related to the response.
+	ErrorMessage *string `json:"error_message,omitempty"`
+
+	// The timestamp when the job was created.
+	CreatedAt *strfmt.DateTime `json:"created_at,omitempty"`
+
+	// The timestamp when the job was updated.
+	UpdatedAt *strfmt.DateTime `json:"updated_at,omitempty"`
+
+	// The timestamp when the job was completed.
+	CompletedAt *strfmt.DateTime `json:"completed_at,omitempty"`
+}
+
+// Constants associated with the JobDetailResponse.Status property.
+// The current status of the job.
+const (
+	JobDetailResponse_Status_Completed = "COMPLETED"
+	JobDetailResponse_Status_Downloaded = "DOWNLOADED"
+	JobDetailResponse_Status_Failed = "FAILED"
+	JobDetailResponse_Status_InProgress = "IN_PROGRESS"
+	JobDetailResponse_Status_Pending = "PENDING"
+	JobDetailResponse_Status_Queued = "QUEUED"
+	JobDetailResponse_Status_Unavailable = "UNAVAILABLE"
+)
+
+// Constants associated with the JobDetailResponse.FileType property.
+// Contanis the file type for download e.g. json/csv.
+const (
+	JobDetailResponse_FileType_Csv = "csv"
+	JobDetailResponse_FileType_JSON = "json"
+)
+
+// UnmarshalJobDetailResponse unmarshals an instance of JobDetailResponse from the specified map of raw messages.
+func UnmarshalJobDetailResponse(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(JobDetailResponse)
+	err = core.UnmarshalPrimitive(m, "job_id", &obj.JobID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "job_id-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "sub_account", &obj.SubAccount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "sub_account-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "resource_query", &obj.ResourceQuery)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_query-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "file_type", &obj.FileType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "file_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "error_message", &obj.ErrorMessage)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "error_message-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "created_at", &obj.CreatedAt)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "created_at-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "updated_at", &obj.UpdatedAt)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "updated_at-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "completed_at", &obj.CompletedAt)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "completed_at-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// JobDetailResponseCollection : JobDetailResponseCollection struct
+type JobDetailResponseCollection struct {
+	// The total number of job entries present.
+	TotalCount *int64 `json:"total_count" validate:"required"`
+
+	// The list of job entries.
+	Jobs []JobDetailResponse `json:"jobs" validate:"required"`
+}
+
+// UnmarshalJobDetailResponseCollection unmarshals an instance of JobDetailResponseCollection from the specified map of raw messages.
+func UnmarshalJobDetailResponseCollection(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(JobDetailResponseCollection)
+	err = core.UnmarshalPrimitive(m, "total_count", &obj.TotalCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_count-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "jobs", &obj.Jobs, UnmarshalJobDetailResponse)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "jobs-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // ListBatchConfigsOptions : The ListBatchConfigs options.
 type ListBatchConfigsOptions struct {
 	// The List of resources requested as part of List Configs Query API.
-	Configs []Requestconfigs `json:"configs" validate:"required"`
+	Configs []RequestConfigs `json:"configs" validate:"required"`
 
 	// The number of resources to return on the page.
 	Limit *int64 `json:"limit,omitempty"`
@@ -1008,14 +1932,14 @@ type ListBatchConfigsOptions struct {
 }
 
 // NewListBatchConfigsOptions : Instantiate ListBatchConfigsOptions
-func (*ConfigurationAggregatorV1) NewListBatchConfigsOptions(configs []Requestconfigs) *ListBatchConfigsOptions {
+func (*ConfigurationAggregatorV1) NewListBatchConfigsOptions(configs []RequestConfigs) *ListBatchConfigsOptions {
 	return &ListBatchConfigsOptions{
 		Configs: configs,
 	}
 }
 
 // SetConfigs : Allow user to set Configs
-func (_options *ListBatchConfigsOptions) SetConfigs(configs []Requestconfigs) *ListBatchConfigsOptions {
+func (_options *ListBatchConfigsOptions) SetConfigs(configs []RequestConfigs) *ListBatchConfigsOptions {
 	_options.Configs = configs
 	return _options
 }
@@ -1036,6 +1960,32 @@ func (_options *ListBatchConfigsOptions) SetStart(start string) *ListBatchConfig
 func (options *ListBatchConfigsOptions) SetHeaders(param map[string]string) *ListBatchConfigsOptions {
 	options.Headers = param
 	return options
+}
+
+// ListChatHistoryResponse : The response body for listing chat history entries.
+type ListChatHistoryResponse struct {
+	// The total number of chat history entries present.
+	TotalCount *int64 `json:"total_count" validate:"required"`
+
+	// The list of chat history entries.
+	Chats []ChatHistoryResponse `json:"chats" validate:"required"`
+}
+
+// UnmarshalListChatHistoryResponse unmarshals an instance of ListChatHistoryResponse from the specified map of raw messages.
+func UnmarshalListChatHistoryResponse(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ListChatHistoryResponse)
+	err = core.UnmarshalPrimitive(m, "total_count", &obj.TotalCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_count-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "chats", &obj.Chats, UnmarshalChatHistoryResponse)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "chats-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
 }
 
 // ListConfigsOptions : The ListConfigs options.
@@ -1173,10 +2123,10 @@ type ListConfigsQueryResponse struct {
 	Next *PaginatedNext `json:"next,omitempty"`
 
 	// Array of resource configurations.
-	Configs []Config `json:"configs,omitempty"`
+	Configs []Config `json:"configs" validate:"required"`
 
 	// Array of errors for not found resource configurations.
-	Errors []Error `json:"errors,omitempty"`
+	Errors []Error `json:"errors" validate:"required"`
 }
 
 // UnmarshalListConfigsQueryResponse unmarshals an instance of ListConfigsQueryResponse from the specified map of raw messages.
@@ -1239,7 +2189,7 @@ type ListConfigsResponse struct {
 	Next *PaginatedNext `json:"next,omitempty"`
 
 	// Array of resource configurations.
-	Configs []Config `json:"configs,omitempty"`
+	Configs []Config `json:"configs" validate:"required"`
 }
 
 // UnmarshalListConfigsResponse unmarshals an instance of ListConfigsResponse from the specified map of raw messages.
@@ -1287,6 +2237,89 @@ func (resp *ListConfigsResponse) GetNextStart() (*string, error) {
 	return resp.Next.Start, nil
 }
 
+// ListNlpChatHistoryOptions : The ListNlpChatHistory options.
+type ListNlpChatHistoryOptions struct {
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewListNlpChatHistoryOptions : Instantiate ListNlpChatHistoryOptions
+func (*ConfigurationAggregatorV1) NewListNlpChatHistoryOptions() *ListNlpChatHistoryOptions {
+	return &ListNlpChatHistoryOptions{}
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListNlpChatHistoryOptions) SetHeaders(param map[string]string) *ListNlpChatHistoryOptions {
+	options.Headers = param
+	return options
+}
+
+// ListNlpResourceQueryJobsOptions : The ListNlpResourceQueryJobs options.
+type ListNlpResourceQueryJobsOptions struct {
+	// Filter jobs by the sub-account in an enterprise hierarchy.
+	SubAccount *string `json:"sub_account,omitempty"`
+
+	// Filter jobs by their current status.
+	Status *string `json:"status,omitempty"`
+
+	// The number of records to retrieve. By default, the list operation return the first 10 records. To retrieve different
+	// set of records, use `limit` with `offset` to page through the available records.
+	Limit *int64 `json:"limit,omitempty"`
+
+	// The number of records to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset`
+	// value. Use `offset` with `limit` to page through the available records.
+	Offset *int64 `json:"offset,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// Constants associated with the ListNlpResourceQueryJobsOptions.Status property.
+// Filter jobs by their current status.
+const (
+	ListNlpResourceQueryJobsOptions_Status_Completed = "COMPLETED"
+	ListNlpResourceQueryJobsOptions_Status_Failed = "FAILED"
+	ListNlpResourceQueryJobsOptions_Status_InProgress = "IN_PROGRESS"
+	ListNlpResourceQueryJobsOptions_Status_Pending = "PENDING"
+	ListNlpResourceQueryJobsOptions_Status_Unavailable = "UNAVAILABLE"
+)
+
+// NewListNlpResourceQueryJobsOptions : Instantiate ListNlpResourceQueryJobsOptions
+func (*ConfigurationAggregatorV1) NewListNlpResourceQueryJobsOptions() *ListNlpResourceQueryJobsOptions {
+	return &ListNlpResourceQueryJobsOptions{}
+}
+
+// SetSubAccount : Allow user to set SubAccount
+func (_options *ListNlpResourceQueryJobsOptions) SetSubAccount(subAccount string) *ListNlpResourceQueryJobsOptions {
+	_options.SubAccount = core.StringPtr(subAccount)
+	return _options
+}
+
+// SetStatus : Allow user to set Status
+func (_options *ListNlpResourceQueryJobsOptions) SetStatus(status string) *ListNlpResourceQueryJobsOptions {
+	_options.Status = core.StringPtr(status)
+	return _options
+}
+
+// SetLimit : Allow user to set Limit
+func (_options *ListNlpResourceQueryJobsOptions) SetLimit(limit int64) *ListNlpResourceQueryJobsOptions {
+	_options.Limit = core.Int64Ptr(limit)
+	return _options
+}
+
+// SetOffset : Allow user to set Offset
+func (_options *ListNlpResourceQueryJobsOptions) SetOffset(offset int64) *ListNlpResourceQueryJobsOptions {
+	_options.Offset = core.Int64Ptr(offset)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *ListNlpResourceQueryJobsOptions) SetHeaders(param map[string]string) *ListNlpResourceQueryJobsOptions {
+	options.Headers = param
+	return options
+}
+
 // ManualReconcileOptions : The ManualReconcile options.
 type ManualReconcileOptions struct {
 	// Specific resource CRNs to reconcile (maximum ~20). The resource CRNs should be the instance CRN of the service.
@@ -1317,7 +2350,7 @@ func (options *ManualReconcileOptions) SetHeaders(param map[string]string) *Manu
 // ManualReconcileResponse : The reconciliation response.
 type ManualReconcileResponse struct {
 	// Unique identifier for the reconciliation request.
-	ReconcileID *strfmt.UUID `json:"reconcile_id,omitempty"`
+	ReconcileID *string `json:"reconcile_id,omitempty"`
 
 	// URL to check the status of the reconciliation request.
 	Href *string `json:"href,omitempty"`
@@ -1338,6 +2371,178 @@ func UnmarshalManualReconcileResponse(m map[string]json.RawMessage, result inter
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
+}
+
+// NLPQueryResponse : The resource query response.
+type NLPQueryResponse struct {
+	// The natural language based resource query string.
+	ResourceQuery *string `json:"resource_query" validate:"required"`
+
+	// The response message generated for the resource query.
+	ResponseSummary *string `json:"response_summary" validate:"required"`
+
+	// The total number of resources present.
+	TotalCount *int64 `json:"total_count" validate:"required"`
+
+	// The maximum number of resources retrieved per page.
+	Limit *int64 `json:"limit" validate:"required"`
+
+	// The reference to the first page of entries.
+	First *PaginatedFirst `json:"first,omitempty"`
+
+	// The reference to the previous page of entries. If absent, this is the first page.
+	Prev *PaginatedPrevious `json:"prev,omitempty"`
+
+	// The reference to the next page of entries. If absent, this is the last page.
+	Next *PaginatedNext `json:"next,omitempty"`
+
+	// The resource details retrieved as a response to the query.
+	Configs []map[string]interface{} `json:"configs" validate:"required"`
+
+	// Any additional data related to the response.
+	Remarks *string `json:"remarks,omitempty"`
+
+	// The total number of LLM tokens used during the query.
+	LlmTokensUsed *int64 `json:"llm_tokens_used,omitempty"`
+
+	// A score between 0.0 and 1.0 indicating the system's confidence in the accuracy or completeness of the resource.
+	ResponseScore *float32 `json:"response_score,omitempty"`
+
+	// A unique identifier.
+	HistoryID *string `json:"history_id,omitempty"`
+}
+
+// UnmarshalNLPQueryResponse unmarshals an instance of NLPQueryResponse from the specified map of raw messages.
+func UnmarshalNLPQueryResponse(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(NLPQueryResponse)
+	err = core.UnmarshalPrimitive(m, "resource_query", &obj.ResourceQuery)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_query-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "response_summary", &obj.ResponseSummary)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "response_summary-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "total_count", &obj.TotalCount)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "total_count-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "limit", &obj.Limit)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "limit-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "first", &obj.First, UnmarshalPaginatedFirst)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "first-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "prev", &obj.Prev, UnmarshalPaginatedPrevious)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "prev-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "next", &obj.Next, UnmarshalPaginatedNext)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "next-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "configs", &obj.Configs)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "configs-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "remarks", &obj.Remarks)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "remarks-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "llm_tokens_used", &obj.LlmTokensUsed)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "llm_tokens_used-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "response_score", &obj.ResponseScore)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "response_score-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "history_id", &obj.HistoryID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "history_id-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
+// NlpQueryConfigsOptions : The NlpQueryConfigs options.
+type NlpQueryConfigsOptions struct {
+	// The natural language based resource query string.
+	ResourceQuery *string `json:"resource_query" validate:"required"`
+
+	// Filter the resource configurations from the specified sub-account in an enterprise hierarchy.
+	SubAccount *string `json:"sub_account" validate:"required"`
+
+	// A unique identifier.
+	HistoryID *string `json:"history_id,omitempty"`
+
+	// The number of resources to return on the page.
+	Limit *int64 `json:"limit,omitempty"`
+
+	// The starting resource for the page, obtained from a previous list request. If unspecified, the first resource will
+	// be returned.
+	Start *string `json:"start,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewNlpQueryConfigsOptions : Instantiate NlpQueryConfigsOptions
+func (*ConfigurationAggregatorV1) NewNlpQueryConfigsOptions(resourceQuery string, subAccount string) *NlpQueryConfigsOptions {
+	return &NlpQueryConfigsOptions{
+		ResourceQuery: core.StringPtr(resourceQuery),
+		SubAccount: core.StringPtr(subAccount),
+	}
+}
+
+// SetResourceQuery : Allow user to set ResourceQuery
+func (_options *NlpQueryConfigsOptions) SetResourceQuery(resourceQuery string) *NlpQueryConfigsOptions {
+	_options.ResourceQuery = core.StringPtr(resourceQuery)
+	return _options
+}
+
+// SetSubAccount : Allow user to set SubAccount
+func (_options *NlpQueryConfigsOptions) SetSubAccount(subAccount string) *NlpQueryConfigsOptions {
+	_options.SubAccount = core.StringPtr(subAccount)
+	return _options
+}
+
+// SetHistoryID : Allow user to set HistoryID
+func (_options *NlpQueryConfigsOptions) SetHistoryID(historyID string) *NlpQueryConfigsOptions {
+	_options.HistoryID = core.StringPtr(historyID)
+	return _options
+}
+
+// SetLimit : Allow user to set Limit
+func (_options *NlpQueryConfigsOptions) SetLimit(limit int64) *NlpQueryConfigsOptions {
+	_options.Limit = core.Int64Ptr(limit)
+	return _options
+}
+
+// SetStart : Allow user to set Start
+func (_options *NlpQueryConfigsOptions) SetStart(start string) *NlpQueryConfigsOptions {
+	_options.Start = core.StringPtr(start)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *NlpQueryConfigsOptions) SetHeaders(param map[string]string) *NlpQueryConfigsOptions {
+	options.Headers = param
+	return options
 }
 
 // PaginatedFirst : The reference to the first page of entries.
@@ -1439,10 +2644,31 @@ func UnmarshalProfileTemplate(m map[string]json.RawMessage, result interface{}) 
 	return
 }
 
+// ReconciliationModeStatus : Status details of a reconciliation mode.
+type ReconciliationModeStatus struct {
+	// The timestamp at which the configuration was last refreshed by this reconciliation mode.
+	LastRefreshTime *strfmt.DateTime `json:"last_refresh_time,omitempty"`
+}
+
+// UnmarshalReconciliationModeStatus unmarshals an instance of ReconciliationModeStatus from the specified map of raw messages.
+func UnmarshalReconciliationModeStatus(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(ReconciliationModeStatus)
+	err = core.UnmarshalPrimitive(m, "last_refresh_time", &obj.LastRefreshTime)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "last_refresh_time-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // ReplaceSettingsOptions : The ReplaceSettings options.
 type ReplaceSettingsOptions struct {
 	// The field denoting if the resource collection is enabled.
 	ResourceCollectionEnabled *bool `json:"resource_collection_enabled,omitempty"`
+
+	// The field denoting if the realtime collection is enabled.
+	RealtimeConfigEnabled *bool `json:"realtime_config_enabled,omitempty"`
 
 	// The trusted profile id that provides Reader access to the App Configuration instance to collect resource metadata.
 	TrustedProfileID *string `json:"trusted_profile_id,omitempty"`
@@ -1465,6 +2691,12 @@ func (*ConfigurationAggregatorV1) NewReplaceSettingsOptions() *ReplaceSettingsOp
 // SetResourceCollectionEnabled : Allow user to set ResourceCollectionEnabled
 func (_options *ReplaceSettingsOptions) SetResourceCollectionEnabled(resourceCollectionEnabled bool) *ReplaceSettingsOptions {
 	_options.ResourceCollectionEnabled = core.BoolPtr(resourceCollectionEnabled)
+	return _options
+}
+
+// SetRealtimeConfigEnabled : Allow user to set RealtimeConfigEnabled
+func (_options *ReplaceSettingsOptions) SetRealtimeConfigEnabled(realtimeConfigEnabled bool) *ReplaceSettingsOptions {
+	_options.RealtimeConfigEnabled = core.BoolPtr(realtimeConfigEnabled)
 	return _options
 }
 
@@ -1492,10 +2724,67 @@ func (options *ReplaceSettingsOptions) SetHeaders(param map[string]string) *Repl
 	return options
 }
 
+// RequestConfigs : The details of each resource requested as part of List Configs Query API.
+type RequestConfigs struct {
+	// The unique CRN of the IBM Cloud resource.
+	ResourceCrn *string `json:"resource_crn" validate:"required"`
+
+	// The name of the service to which the resource belongs.
+	ServiceName *string `json:"service_name,omitempty"`
+
+	// The list of type for resource configuration that are to be retrieved.
+	ConfigType []string `json:"config_type,omitempty"`
+
+	// The unique identifier for each IBM resource.
+	TypeID *string `json:"type_id,omitempty"`
+}
+
+// NewRequestConfigs : Instantiate RequestConfigs (Generic Model Constructor)
+func (*ConfigurationAggregatorV1) NewRequestConfigs(resourceCrn string) (_model *RequestConfigs, err error) {
+	_model = &RequestConfigs{
+		ResourceCrn: core.StringPtr(resourceCrn),
+	}
+	err = core.ValidateStruct(_model, "required parameters")
+	if err != nil {
+		err = core.SDKErrorf(err, "", "model-missing-required", common.GetComponentInfo())
+	}
+	return
+}
+
+// UnmarshalRequestConfigs unmarshals an instance of RequestConfigs from the specified map of raw messages.
+func UnmarshalRequestConfigs(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(RequestConfigs)
+	err = core.UnmarshalPrimitive(m, "resource_crn", &obj.ResourceCrn)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "resource_crn-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "service_name", &obj.ServiceName)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "service_name-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "config_type", &obj.ConfigType)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "config_type-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "type_id", &obj.TypeID)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "type_id-error", common.GetComponentInfo())
+		return
+	}
+	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
+	return
+}
+
 // SettingsResponse : Settings API response.
 type SettingsResponse struct {
 	// The field to check if the resource collection is enabled.
 	ResourceCollectionEnabled *bool `json:"resource_collection_enabled,omitempty"`
+
+	// The field to check if the resource collection is enabled.
+	RealtimeConfigEnabled *bool `json:"realtime_config_enabled,omitempty"`
 
 	// The trusted profile ID that provides access to App Configuration instance to retrieve resource metadata.
 	TrustedProfileID *string `json:"trusted_profile_id,omitempty"`
@@ -1504,10 +2793,10 @@ type SettingsResponse struct {
 	LastUpdated *strfmt.DateTime `json:"last_updated,omitempty"`
 
 	// Regions for which the resource collection is enabled.
-	Regions []string `json:"regions,omitempty"`
+	Regions []string `json:"regions" validate:"required"`
 
 	// The additional scope that enables resource collection for Enterprise acccounts.
-	AdditionalScope []AdditionalScope `json:"additional_scope,omitempty"`
+	AdditionalScope []AdditionalScope `json:"additional_scope" validate:"required"`
 }
 
 // UnmarshalSettingsResponse unmarshals an instance of SettingsResponse from the specified map of raw messages.
@@ -1516,6 +2805,11 @@ func UnmarshalSettingsResponse(m map[string]json.RawMessage, result interface{})
 	err = core.UnmarshalPrimitive(m, "resource_collection_enabled", &obj.ResourceCollectionEnabled)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "resource_collection_enabled-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalPrimitive(m, "realtime_config_enabled", &obj.RealtimeConfigEnabled)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "realtime_config_enabled-error", common.GetComponentInfo())
 		return
 	}
 	err = core.UnmarshalPrimitive(m, "trusted_profile_id", &obj.TrustedProfileID)
@@ -1547,15 +2841,30 @@ type StatusResponse struct {
 	// The timestamp at which the configuration was last refreshed.
 	LastConfigRefreshTime *strfmt.DateTime `json:"last_config_refresh_time,omitempty"`
 
+	// Latest collection mode.
+	LatestReconciliationMode *string `json:"latest_reconciliation_mode,omitempty"`
+
+	// Per reconciliation mode details. Only the modes that have run are present; the object is empty if no reconciliation
+	// has completed yet.
+	ReconciliationModes *StatusResponseReconciliationModes `json:"reconciliation_modes,omitempty"`
+
 	// Status of the resource collection.
 	Status *string `json:"status" validate:"required"`
 }
 
+// Constants associated with the StatusResponse.LatestReconciliationMode property.
+// Latest collection mode.
+const (
+	StatusResponse_LatestReconciliationMode_Automatic = "automatic"
+	StatusResponse_LatestReconciliationMode_Manual = "manual"
+	StatusResponse_LatestReconciliationMode_Realtime = "realtime"
+)
+
 // Constants associated with the StatusResponse.Status property.
 // Status of the resource collection.
 const (
-	StatusResponse_Status_Complete   = "complete"
-	StatusResponse_Status_Initiated  = "initiated"
+	StatusResponse_Status_Complete = "complete"
+	StatusResponse_Status_Initialised = "initialised"
 	StatusResponse_Status_Inprogress = "inprogress"
 )
 
@@ -1567,6 +2876,16 @@ func UnmarshalStatusResponse(m map[string]json.RawMessage, result interface{}) (
 		err = core.SDKErrorf(err, "", "last_config_refresh_time-error", common.GetComponentInfo())
 		return
 	}
+	err = core.UnmarshalPrimitive(m, "latest_reconciliation_mode", &obj.LatestReconciliationMode)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "latest_reconciliation_mode-error", common.GetComponentInfo())
+		return
+	}
+	err = core.UnmarshalModel(m, "reconciliation_modes", &obj.ReconciliationModes, UnmarshalStatusResponseReconciliationModes)
+	if err != nil {
+		err = core.SDKErrorf(err, "", "reconciliation_modes-error", common.GetComponentInfo())
+		return
+	}
 	err = core.UnmarshalPrimitive(m, "status", &obj.Status)
 	if err != nil {
 		err = core.SDKErrorf(err, "", "status-error", common.GetComponentInfo())
@@ -1576,53 +2895,103 @@ func UnmarshalStatusResponse(m map[string]json.RawMessage, result interface{}) (
 	return
 }
 
-// Requestconfigs : The details of each resource requested as part of List Configs Query API.
-type Requestconfigs struct {
-	// The unique CRN of the IBM Cloud resource.
-	ResourceCrn *string `json:"resource_crn,omitempty"`
+// StatusResponseReconciliationModes : Per reconciliation mode details. Only the modes that have run are present; the object is empty if no reconciliation
+// has completed yet.
+type StatusResponseReconciliationModes struct {
+	// Status details of a reconciliation mode.
+	Automatic *ReconciliationModeStatus `json:"automatic,omitempty"`
 
-	// The name of the service to which the resource belongs.
-	ServiceName *string `json:"service_name,omitempty"`
+	// Status details of a reconciliation mode.
+	Manual *ReconciliationModeStatus `json:"manual,omitempty"`
 
-	// The list of type for resource configuration that are to be retrieved.
-	ConfigType []string `json:"config_type,omitempty"`
-
-	// The unique identifier for each IBM resource.
-	TypeID *string `json:"type_id,omitempty"`
+	// Status details of a reconciliation mode.
+	Realtime *ReconciliationModeStatus `json:"realtime,omitempty"`
 }
 
-// UnmarshalRequestconfigs unmarshals an instance of Requestconfigs from the specified map of raw messages.
-func UnmarshalRequestconfigs(m map[string]json.RawMessage, result interface{}) (err error) {
-	obj := new(Requestconfigs)
-	err = core.UnmarshalPrimitive(m, "resource_crn", &obj.ResourceCrn)
+// UnmarshalStatusResponseReconciliationModes unmarshals an instance of StatusResponseReconciliationModes from the specified map of raw messages.
+func UnmarshalStatusResponseReconciliationModes(m map[string]json.RawMessage, result interface{}) (err error) {
+	obj := new(StatusResponseReconciliationModes)
+	err = core.UnmarshalModel(m, "automatic", &obj.Automatic, UnmarshalReconciliationModeStatus)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "resource_crn-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "automatic-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "service_name", &obj.ServiceName)
+	err = core.UnmarshalModel(m, "manual", &obj.Manual, UnmarshalReconciliationModeStatus)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "service_name-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "manual-error", common.GetComponentInfo())
 		return
 	}
-	err = core.UnmarshalPrimitive(m, "config_type", &obj.ConfigType)
+	err = core.UnmarshalModel(m, "realtime", &obj.Realtime, UnmarshalReconciliationModeStatus)
 	if err != nil {
-		err = core.SDKErrorf(err, "", "config_type-error", common.GetComponentInfo())
-		return
-	}
-	err = core.UnmarshalPrimitive(m, "type_id", &obj.TypeID)
-	if err != nil {
-		err = core.SDKErrorf(err, "", "type_id-error", common.GetComponentInfo())
+		err = core.SDKErrorf(err, "", "realtime-error", common.GetComponentInfo())
 		return
 	}
 	reflect.ValueOf(result).Elem().Set(reflect.ValueOf(obj))
 	return
 }
 
+// UpdateNlpChatHistoryOptions : The UpdateNlpChatHistory options.
+type UpdateNlpChatHistoryOptions struct {
+	// A unique identifier.
+	ID *string `json:"id" validate:"required"`
+
+	// Title for Chat.
+	Title *string `json:"title,omitempty"`
+
+	// The natural language based resource query string.
+	Query *string `json:"query,omitempty"`
+
+	// Indicates whether the chat history entry is deleted.
+	Deleted *bool `json:"deleted,omitempty"`
+
+	// Allows users to set headers on API requests.
+	Headers map[string]string
+}
+
+// NewUpdateNlpChatHistoryOptions : Instantiate UpdateNlpChatHistoryOptions
+func (*ConfigurationAggregatorV1) NewUpdateNlpChatHistoryOptions(id string) *UpdateNlpChatHistoryOptions {
+	return &UpdateNlpChatHistoryOptions{
+		ID: core.StringPtr(id),
+	}
+}
+
+// SetID : Allow user to set ID
+func (_options *UpdateNlpChatHistoryOptions) SetID(id string) *UpdateNlpChatHistoryOptions {
+	_options.ID = core.StringPtr(id)
+	return _options
+}
+
+// SetTitle : Allow user to set Title
+func (_options *UpdateNlpChatHistoryOptions) SetTitle(title string) *UpdateNlpChatHistoryOptions {
+	_options.Title = core.StringPtr(title)
+	return _options
+}
+
+// SetQuery : Allow user to set Query
+func (_options *UpdateNlpChatHistoryOptions) SetQuery(query string) *UpdateNlpChatHistoryOptions {
+	_options.Query = core.StringPtr(query)
+	return _options
+}
+
+// SetDeleted : Allow user to set Deleted
+func (_options *UpdateNlpChatHistoryOptions) SetDeleted(deleted bool) *UpdateNlpChatHistoryOptions {
+	_options.Deleted = core.BoolPtr(deleted)
+	return _options
+}
+
+// SetHeaders : Allow user to set Headers
+func (options *UpdateNlpChatHistoryOptions) SetHeaders(param map[string]string) *UpdateNlpChatHistoryOptions {
+	options.Headers = param
+	return options
+}
+
+//
 // ConfigsPager can be used to simplify the use of the "ListConfigs" method.
+//
 type ConfigsPager struct {
-	hasNext     bool
-	options     *ListConfigsOptions
-	client      *ConfigurationAggregatorV1
+	hasNext bool
+	options *ListConfigsOptions
+	client  *ConfigurationAggregatorV1
 	pageContext struct {
 		next *string
 	}
@@ -1635,7 +3004,7 @@ func (configurationAggregator *ConfigurationAggregatorV1) NewConfigsPager(option
 		return
 	}
 
-	var optionsCopy ListConfigsOptions = *options
+	optionsCopy := *options
 	pager = &ConfigsPager{
 		hasNext: true,
 		options: &optionsCopy,
@@ -1657,7 +3026,8 @@ func (pager *ConfigsPager) GetNextWithContext(ctx context.Context) (page []Confi
 
 	pager.options.Start = pager.pageContext.next
 
-	result, _, err := pager.client.ListConfigsWithContext(ctx, pager.options)
+	var result *ListConfigsResponse
+	result, _, err = pager.client.ListConfigsWithContext(ctx, pager.options)
 	if err != nil {
 		err = core.RepurposeSDKProblem(err, "error-getting-next-page")
 		return
