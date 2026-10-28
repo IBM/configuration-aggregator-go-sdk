@@ -23,6 +23,8 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 	"sync"
 
 	"github.com/IBM/configuration-aggregator-go-sdk/configurationaggregatorv1"
@@ -98,11 +100,12 @@ func listConfigs() {
 
 }
 
-func replaceSettings(trustedProfileID string, resourceCollectionEnabled bool, regions []string) {
+func replaceSettings(trustedProfileID string, resourceCollectionEnabled bool, realtimeConfigEnabled bool, regions []string) {
 	fmt.Println("Executing the Replace Settings function")
 	replaceSettingsOptions := configAggregatorInstance.NewReplaceSettingsOptions()
 	replaceSettingsOptions.TrustedProfileID = core.StringPtr(trustedProfileID)
 	replaceSettingsOptions.ResourceCollectionEnabled = core.BoolPtr(resourceCollectionEnabled)
+	replaceSettingsOptions.RealtimeConfigEnabled = core.BoolPtr(realtimeConfigEnabled)
 	replaceSettingsOptions.Regions = regions
 	replaceSettingsResponse, replaceSettingsResponseCode, err := configAggregatorInstance.ReplaceSettings(replaceSettingsOptions)
 	if err != nil {
@@ -150,7 +153,7 @@ func ManualConfigReconcile() {
 	fmt.Println(manualConfigReconcileResponseCode.StatusCode)
 }
 
-func listBatchConfigs(configs []configurationaggregatorv1.Requestconfigs, limit int64, start string) {
+func listBatchConfigs(configs []configurationaggregatorv1.RequestConfigs, limit int64, start string) {
 	fmt.Println("Executing the List Batch Configs Function")
 
 	// Create options with the array of configs
@@ -171,17 +174,177 @@ func listBatchConfigs(configs []configurationaggregatorv1.Requestconfigs, limit 
 	fmt.Println(listBatchConfigsResponseCode.StatusCode)
 }
 
+func nlpQueryConfigs(resourceQuery string, subAccount string, historyID string, limit int64) {
+	fmt.Println("Executing the NLP Query Configs Function")
+	nlpQueryConfigsOptions := configAggregatorInstance.NewNlpQueryConfigsOptions(resourceQuery, subAccount)
+	if historyID != "" {
+		nlpQueryConfigsOptions.SetHistoryID(historyID)
+	}
+	nlpQueryConfigsOptions.SetLimit(limit)
+	nlpQueryResponse, nlpQueryResponseCode, err := configAggregatorInstance.NlpQueryConfigs(nlpQueryConfigsOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	nlpQuery, _ := json.MarshalIndent(nlpQueryResponse, "", "  ")
+	fmt.Println(string(nlpQuery))
+	fmt.Println(nlpQueryResponseCode.StatusCode)
+}
+
+func listNlpChatHistory() {
+	fmt.Println("Executing the List NLP Chat History Function")
+	listNlpChatHistoryOptions := configAggregatorInstance.NewListNlpChatHistoryOptions()
+	listChatHistoryResponse, listChatHistoryResponseCode, err := configAggregatorInstance.ListNlpChatHistory(listNlpChatHistoryOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	listChatHistory, _ := json.MarshalIndent(listChatHistoryResponse, "", "  ")
+	fmt.Println(string(listChatHistory))
+	fmt.Println(listChatHistoryResponseCode.StatusCode)
+}
+
+func createNlpChatHistory(title string, query string) *string {
+	fmt.Println("Executing the Create NLP Chat History Function")
+	createNlpChatHistoryOptions := configAggregatorInstance.NewCreateNlpChatHistoryOptions(title, query)
+	chatHistoryResponse, chatHistoryResponseCode, err := configAggregatorInstance.CreateNlpChatHistory(createNlpChatHistoryOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return nil
+	}
+	chatHistory, _ := json.MarshalIndent(chatHistoryResponse, "", "  ")
+	fmt.Println(string(chatHistory))
+	fmt.Println(chatHistoryResponseCode.StatusCode)
+	return chatHistoryResponse.ID
+}
+
+func updateNlpChatHistory(id string, title string, query string, deleted bool) {
+	fmt.Println("Executing the Update NLP Chat History Function")
+	updateNlpChatHistoryOptions := configAggregatorInstance.NewUpdateNlpChatHistoryOptions(id)
+	updateNlpChatHistoryOptions.SetTitle(title)
+	updateNlpChatHistoryOptions.SetQuery(query)
+	updateNlpChatHistoryOptions.SetDeleted(deleted)
+	chatHistoryResponse, chatHistoryResponseCode, err := configAggregatorInstance.UpdateNlpChatHistory(updateNlpChatHistoryOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	chatHistory, _ := json.MarshalIndent(chatHistoryResponse, "", "  ")
+	fmt.Println(string(chatHistory))
+	fmt.Println(chatHistoryResponseCode.StatusCode)
+}
+
+func listNlpResourceQueryJobs(subAccount string, status string, limit int64, offset int64) {
+	fmt.Println("Executing the List NLP Resource Query Jobs Function")
+	listNlpResourceQueryJobsOptions := configAggregatorInstance.NewListNlpResourceQueryJobsOptions()
+	listNlpResourceQueryJobsOptions.SetSubAccount(subAccount)
+	listNlpResourceQueryJobsOptions.SetStatus(status)
+	listNlpResourceQueryJobsOptions.SetLimit(limit)
+	listNlpResourceQueryJobsOptions.SetOffset(offset)
+	jobsResponse, jobsResponseCode, err := configAggregatorInstance.ListNlpResourceQueryJobs(listNlpResourceQueryJobsOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	jobs, _ := json.MarshalIndent(jobsResponse, "", "  ")
+	fmt.Println(string(jobs))
+	fmt.Println(jobsResponseCode.StatusCode)
+}
+
+func createNlpResourceQueryJob(resourceQuery string, subAccount string, historyID string, fileType string) *string {
+	fmt.Println("Executing the Create NLP Resource Query Job Function")
+	createNlpResourceQueryJobOptions := configAggregatorInstance.NewCreateNlpResourceQueryJobOptions(resourceQuery, subAccount, historyID, fileType)
+	jobResponse, jobResponseCode, err := configAggregatorInstance.CreateNlpResourceQueryJob(createNlpResourceQueryJobOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return nil
+	}
+	job, _ := json.MarshalIndent(jobResponse, "", "  ")
+	fmt.Println(string(job))
+	fmt.Println(jobResponseCode.StatusCode)
+	return jobResponse.JobID
+}
+
+func getNlpResourceQueryJob(jobID string) {
+	fmt.Println("Executing the Get NLP Resource Query Job Function")
+	getNlpResourceQueryJobOptions := configAggregatorInstance.NewGetNlpResourceQueryJobOptions(jobID)
+	jobResponse, jobResponseCode, err := configAggregatorInstance.GetNlpResourceQueryJob(getNlpResourceQueryJobOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	job, _ := json.MarshalIndent(jobResponse, "", "  ")
+	fmt.Println(string(job))
+	fmt.Println(jobResponseCode.StatusCode)
+}
+
+func downloadNlpJobResult(jobID string, outputFile string) {
+	fmt.Println("Executing the Download NLP Job Result Function")
+	jobResponse, _, err := configAggregatorInstance.GetNlpResourceQueryJob(configAggregatorInstance.NewGetNlpResourceQueryJobOptions(jobID))
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	if jobResponse.Status == nil || *jobResponse.Status != configurationaggregatorv1.JobDetailResponse_Status_Completed {
+		status := "<nil>"
+		if jobResponse.Status != nil {
+			status = *jobResponse.Status
+		}
+		fmt.Println("Job is not ready for download. Current status: " + status)
+		return
+	}
+	downloadNlpJobResultOptions := configAggregatorInstance.NewDownloadNlpJobResultOptions(jobID)
+	result, downloadResponseCode, err := configAggregatorInstance.DownloadNlpJobResult(downloadNlpJobResultOptions)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	if result == nil {
+		return
+	}
+	defer result.Close()
+	outFile, err := os.Create(outputFile)
+	if err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	defer outFile.Close()
+	if _, err = io.Copy(outFile, result); err != nil {
+		fmt.Println("Error: " + err.Error())
+		return
+	}
+	fmt.Println("Job result written to " + outputFile)
+	fmt.Println(downloadResponseCode.StatusCode)
+}
+
 func main() {
 
 	authToken := "<authToken>"
 	guid := "<guid>"
 	region := "<region>"
+	resourceCrn := "<resourceCrn>"
+	subAccount := "<accountid>"
 	initAndReturnSingletonInstanceWithAPIKey(authToken, guid, region)
-	replaceSettings("your_trusted_profile_id", true, []string{"all"})
+	replaceSettings("your_trusted_profile_id", true, false, []string{"all"})
+	replaceSettings("your_trusted_profile_id", true, true, []string{"all"})
 	getSettings()
 	getResourceCollectionStatus()
 	ManualConfigReconcile()
 	listConfigs()
-	listBatchConfigs([]configurationaggregatorv1.Requestconfigs{}, 100, "page token")
+	listBatchConfigs([]configurationaggregatorv1.RequestConfigs{{ResourceCrn: core.StringPtr(resourceCrn)}}, 100, "page token")
 
+	nlpQuery := "Show me all resources"
+	nlpQueryConfigs(nlpQuery, subAccount, "", 10)
+	chatID := createNlpChatHistory("Chat 1", nlpQuery)
+	listNlpChatHistory()
+	if chatID != nil {
+		updateNlpChatHistory(*chatID, "Chat 1 updated", nlpQuery, false)
+
+		jobID := createNlpResourceQueryJob(nlpQuery, subAccount, *chatID, "json")
+		listNlpResourceQueryJobs(subAccount, "COMPLETED", 10, 0)
+		if jobID != nil {
+			getNlpResourceQueryJob(*jobID)
+			downloadNlpJobResult(*jobID, "nlp_job_result.json")
+		}
+	}
 }
